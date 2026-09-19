@@ -9,11 +9,35 @@
 
 ## 🚀 Quick Start
 
-1. **Download** `WeCrafter-v1.0-portable.zip` from the [latest release](../../releases/latest)
+1. **Download** [`WeCrafter-v1.2-portable.zip`](../../releases/latest) from the [latest release](../../releases/latest)
 2. **Extract** the zip to any folder (keep the `assets/` folder next to `WeCrafter.exe`)
 3. **Double-click** `WeCrafter.exe` — no installation required!
 
 > **Requirements:** Windows 10/11 (64-bit), OpenGL 3.3+ compatible GPU
+
+---
+
+## 🌐 Multiplayer & Dedicated Server
+
+Play with your friends anywhere across the internet — even behind strict CGNAT home connections — with zero port forwarding required!
+
+### 1-Click Server Hosting (with Cloudflare Quick Tunnel)
+1. Double-click `start_server.cmd` in your game folder.
+2. The script launches the dedicated server on port 7777 and spins up an encrypted, account-free Cloudflare P2P tunnel.
+3. The script automatically copies the public tunnel URL (`https://...trycloudflare.com`) directly to your Windows clipboard and displays it on screen!
+4. Send the URL to your friends.
+
+### Joining a Multiplayer Sector
+1. In the main menu, click **MULTIPLAYER**.
+2. Click the **Server Address** field and press **Ctrl+V** (or simply **Right-Click** the input box) to paste the URL.
+3. Enter your **Explorer Call-Sign**.
+4. Click **CONNECT TO SECTOR**!
+
+### Multiplayer Features & Controls
+- **F11 — Player List & Teleportation**: View all active explorers in your sector with ping and coordinates. Click **[TELEPORT]** to warp safely within 10 blocks facing that player!
+- **Enter — In-Game Chat**: Press `Enter` to open chat, type your transmission, and hit `Enter` to broadcast to the sector. Press `Esc` to cancel.
+- **Synchronized Player Models**: See other explorers in real-time with full 3D biped astronaut meshes, custom skin suits, head pitch, and movement animations.
+- **World & Block Sync**: Block placements, mining, and chunk edits are synchronized across all connected players with delta updates.
 
 ---
 
@@ -23,10 +47,10 @@
 | Key | Action |
 |-----|--------|
 | `W A S D` | Move forward / left / backward / right |
-| `Space` | Jump |
-| `Space` (double-tap) | Toggle fly mode |
+| `Space` | Jump / Swim up |
+| `Space` (double-tap) | Toggle fly mode (Creative / Flight) |
 | `Space` (hold, while flying) | Ascend |
-| `Left Shift` | Sprint / descend while flying |
+| `Left Shift` | Sprint / Descend while flying / Dive in water |
 | `Left Ctrl` | Crouch |
 
 ### World Interaction
@@ -37,16 +61,18 @@
 | `Q` | Drop active item |
 | `B` | Cycle block scale (1×, 2×, 3×, 4×) |
 | `1` – `9` | Select hotbar slot |
-| Mouse Scroll | Scroll hotbar |
+| `Mouse Scroll` | Scroll hotbar |
 
 ### UI & Systems
 | Key | Action |
 |-----|--------|
 | `E` | Open / close Inventory |
 | `X` | Open Xenoscanner (NPC & world info) |
+| `F11` | Open Multiplayer Player Roster & Teleport menu |
+| `Enter` | Open Multiplayer Chat |
 | `F3` | Toggle Debug overlay |
-| `Esc` | Pause menu / back |
-| `Tab` | Cycle camera modes |
+| `Esc` | Pause menu / cancel / back |
+| `Tab` | Cycle camera modes (First-person / Third-person) |
 
 ---
 
@@ -72,7 +98,8 @@ Full god-mode. Unlimited block placement (no resource consumption), flight alway
 
 Every new game generates a **unique procedural world** from a seed. If you leave the seed as `< RANDOM >`, each launch creates a brand-new Astraea-IV sector to explore. Set a specific numeric seed in **Settings → World Seed** to share or revisit a favourite world.
 
-Saves preserve the exact seed, so loading a save always returns you to the same world.
+- **Guaranteed Safe Surface Spawns**: You will always spawn safely on dry land under the open sky — never trapped inside solid blocks or underground.
+- **Fluid & Ocean Realism**: Transparent water surfaces (~72% opacity) with real-time wave shimmer and seamless chunk boundary rendering.
 
 ---
 
@@ -147,51 +174,48 @@ Smaller scales let you build intricate details, decorative trim, and micro-struc
 
 ## 💾 Save System
 
-- Three save slots (Save A / B / C) accessible from the main menu
-- Saves store: world seed, all blocks placed/removed, inventory, player position, equipment
-- Loading a save always restores the exact world state — world seed is **not** re-randomised on load
-
----
-
-## 🔬 RPG & Scanner Systems
-
-- **Xenoscanner** (`X`) — scan the environment for NPC info, block composition, biome data, and resource hints
-- **RPG Stats** — in future Survival mode: health, hunger, thirst, oxygen, and temperature all tracked in real time
-- **Item rarity tiers**: Common → Uncommon → Rare → Epic → Legendary
+- Save slots accessible from the main menu and in-game pause menu
+- Preserves world seed, all placed/mined blocks, inventory, coordinates, and RPG stats
+- Multi-backend architecture supports local disk slots and central server replication
 
 ---
 
 ## 📋 System Requirements
 
 | | Minimum |
-|--|--|
-| **OS** | Windows 10 64-bit |
+|---|---|
+| **OS** | Windows 10/11 64-bit |
 | **GPU** | OpenGL 3.3 compatible (integrated graphics OK) |
 | **RAM** | 4 GB |
-| **Storage** | 10 MB |
+| **Storage** | 15 MB |
 | **CPU** | Any dual-core 2 GHz+ |
 
 ---
 
-## 📁 Folder Structure (portable)
+## 📁 Folder Structure (Portable Bundle)
 
 ```
-WeCrafter-v1.0-portable/
-├── WeCrafter.exe          ← Launch this!
-└── assets/
-    ├── textures/          ← Block & entity atlas
-    ├── shaders/           ← GLSL rendering shaders
-    └── ui/                ← Fonts & UI sprites
+WeCrafter-v1.2-portable/
+├── WeCrafter.exe          ← Double-click to play!
+├── WeCrafterServer.exe    ← Headless dedicated server
+├── start_server.cmd       ← 1-Click host server + Cloudflare Tunnel
+├── scripts/
+│   └── launch_server.ps1  ← Server launcher automation
+├── assets/
+│   ├── textures/          ← Block & entity textures
+│   ├── shaders/           ← GLSL rendering shaders
+│   └── ui/                ← Fonts & HUD elements
+└── README.md
 ```
 
-> ⚠️ Do **not** move `WeCrafter.exe` out of the folder — the `assets/` directory must remain alongside it.
+> ⚠️ Keep the `assets/` directory alongside `WeCrafter.exe`.
 
 ---
 
 ## 🙏 Credits
 
 - **Created by Kynlo**
-- UI assets: [Kenney.nl](https://kenney.nl) (CC0)
+- UI & Sprites: [Kenney.nl](https://kenney.nl) (CC0)
 - Font: *Kenney Future* (CC0)
 
 ---
