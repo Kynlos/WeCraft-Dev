@@ -9,7 +9,7 @@
 
 ## 🚀 Quick Start
 
-1. **Download** [`WeCrafter-v1.3-portable.zip`](../../releases/latest) from the [latest release](../../releases/latest)
+1. **Download** [`WeCrafter-v1.4-portable.zip`](../../releases/latest) from the [latest release](../../releases/latest)
 2. **Extract** the zip to any folder (keep the `assets/` folder next to `WeCrafter.exe`)
 3. **Double-click** `WeCrafter.exe` — no installation required!
 
