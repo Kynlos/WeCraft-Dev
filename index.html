@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeCrafter — Infinite Sci-Fi Procedural Voxel Odyssey | C++20 & OpenGL 3.3</title>
+  <meta name="description" content="WeCrafter (formerly TestCraft) is an infinite procedural sci-fi voxel sandbox engineered in C++20 and OpenGL 3.3 Core for 144+ FPS with zero garbage collection stutter.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient CRT Scanline Overlay -->
+  <div class="scanlines"></div>
+
+  <!-- Main Navigation -->
+  <nav class="navbar">
+    <div class="container nav-content">
+      <a href="#" class="brand-logo">
+        <div class="brand-icon"></div>
+        <span class="brand-name">WeCrafter</span>
+        <span class="brand-tag">v2.0</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#codex">Blocks</a></li>
+        <li><a href="#subblocks">Sub-Blocks</a></li>
+        <li><a href="#armory">Armory</a></li>
+        <li><a href="#worldgen">Biomes</a></li>
+        <li><a href="#fauna">Fauna (21)</a></li>
+        <li><a href="#combat">Combat</a></li>
+        <li><a href="#crafting">Crafting & RPG</a></li>
+        <li><a href="#multiplayer">Co-Op</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="audioToggleBtn" class="btn-audio-toggle" title="Toggle Sci-Fi SFX">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        </button>
+        <a href="#stay-tuned" class="btn btn-primary nav-status-btn">
+          <span class="nav-status-dot"></span>
+          Coming Soon
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <div class="hero-badge-pulse"></div>
+          <span>NATIVE C++20 & OPENGL 3.3 CORE ENGINE</span>
+        </div>
+
+        <h1 class="hero-title">
+          Forge Worlds. <br>
+          Master Matter. <br>
+          <span class="hero-title-highlight">Defy Physics.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          Experience <strong>WeCrafter</strong>: an infinite procedural sci-fi voxel sandbox engineered from bare metal. Built with asynchronous multi-threaded chunk streaming, cellular fluid thermodynamics, 50 registered sci-fi blocks, multi-scale 4×4 sub-block sculpting, and zero garbage-collection stutter.
+        </p>
+
+        <div class="hero-cta">
+          <a href="#codex" class="btn btn-primary">Explore 50 Blocks</a>
+          <a href="#subblocks" class="btn btn-emerald">4×4 Sub-Blocks [B]</a>
+          <a href="#combat" class="btn btn-secondary">Target Combat HUD</a>
+        </div>
+
+        <!-- Telemetry Ticker -->
+        <div class="telemetry-ticker">
+          <div class="telemetry-item">
+            <span class="telemetry-val">144+ FPS</span>
+            <span class="telemetry-lbl">Framerate Target</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-val">0.0 ms</span>
+            <span class="telemetry-lbl">GC Pause Stutter</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-val">32 KB</span>
+            <span class="telemetry-lbl">Per-Chunk RAM</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-val">50 Blocks</span>
+            <span class="telemetry-lbl">5 Rarity Tiers</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-val">42 / 42</span>
+            <span class="telemetry-lbl">Unit Tests 100%</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-val">Discord</span>
+            <span class="telemetry-lbl">Activity SDK Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero 3D Voxel Stage -->
+      <div class="hero-stage-card" id="voxelLabStage">
+        <div class="stage-header">
+          <div class="stage-title">
+            <span class="text-cyan">◆</span> 3D Holographic Voxel Lab
+          </div>
+          <div class="stage-controls">
+            <button class="stage-btn" id="stageOrbitBtn">Orbit Active</button>
+            <button class="stage-btn" id="stageZoomReset">Reset View</button>
+          </div>
+        </div>
+
+        <div class="canvas-viewport">
+          <canvas id="voxelLabCanvas"></canvas>
+          <div class="stage-hud-overlay">
+            <div class="stage-block-info">
+              <span id="stageBlockName" style="font-weight: 700; color: #fff;">Quantum Core</span>
+              <span id="stageBlockRarity" class="rarity-pill rarity-epic">Epic</span>
+            </div>
+            <div class="stage-block-info">
+              <span id="stageBlockHardness">Hardness: 4.0</span>
+              <span style="margin: 0 4px;">•</span>
+              <span id="stageBlockEmissive" class="text-cyan">Emissive: YES</span>
+            </div>
+          </div>
+        </div>
+
+        <p style="margin-top: 14px; font-size: 0.8rem; color: var(--text-dim); text-align: center; font-family: var(--font-mono);">
+          [Left Click + Drag] to Orbit 360° • [Mouse Scroll] to Zoom • Select blocks in Codex below
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Section: Engine Performance -->
+  <section class="section" id="performance" style="background: rgba(8, 12, 24, 0.5);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Engine Subsystem</span>
+        <h2 class="section-title">Built for Pure Uncompromised Speed</h2>
+        <p class="section-desc">Traditional voxel sandboxes choke on CPU chunk generation and garbage collection. WeCrafter is built in native C++20 with an ultra-lean memory architecture.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="feature-card">
+          <div class="card-icon">⚡</div>
+          <h3 class="card-title">Multi-Threaded Work-Stealing</h3>
+          <p class="card-body">
+            FastNoiseLite terrain noise synthesis and CPU greedy meshing run asynchronously across dedicated worker threads using <code>std::condition_variable</code> and mutex queues. The main render loop remains locked at 144+ FPS even at high sprint speeds.
+          </p>
+          <div class="card-metrics">
+            <span class="metric-tag">Zero Render Hitch</span>
+            <span class="metric-tag">Parallel Chunks</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">📐</div>
+          <h3 class="card-title">Greedy Face Culling</h3>
+          <p class="card-body">
+            Concealed voxel faces sharing borders with solid neighbors are mathematically culled prior to GPU upload. This discards <strong>80% to 95% of all voxel faces</strong>, compressing vertex streams into lightning-fast GPU VBO buffers.
+          </p>
+          <div class="card-metrics">
+            <span class="metric-tag">80-95% Culled</span>
+            <span class="metric-tag">Optimized VBO</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">💡</div>
+          <h3 class="card-title">Per-Vertex Baked AO</h3>
+          <p class="card-body">
+            4-level corner Ambient Occlusion is computed during CPU meshing and baked directly into vertex attributes. This delivers rich volumetric depth and realistic contact shadows with <strong>zero extra render passes or post-processing lag</strong>.
+          </p>
+          <div class="card-metrics">
+            <span class="metric-tag">0 Post-Passes</span>
+            <span class="metric-tag">Baked 4-Level AO</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">🚀</div>
+          <h3 class="card-title">GPU Upload Throttling</h3>
+          <p class="card-body">
+            To prevent micro-stutter when traversing high-speed terrain, the OpenGL buffer dispatcher caps GPU VBO uploads to a maximum of 16 chunks per frame. Terrain streams in with butter-smooth frame pacing.
+          </p>
+          <div class="card-metrics">
+            <span class="metric-tag">16 Chunks/Frame Cap</span>
+            <span class="metric-tag">Uniform Pacing</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">💾</div>
+          <h3 class="card-title">32 KB Compact Footprint</h3>
+          <p class="card-body">
+            Each 16×16×128 chunk stores raw <code>uint8_t</code> voxel identifiers. 500 active world chunks occupy less than 20 MB of system RAM, enabling massive planetary render distances without memory bloat.
+          </p>
+          <div class="card-metrics">
+            <span class="metric-tag">32 KB / Chunk</span>
+            <span class="metric-tag">&lt; 20MB / 500 Chunks</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">🌐</div>
+          <h3 class="card-title">Instant Discord Voice Co-Op</h3>
+          <p class="card-body">
+            Native Discord Embedded App SDK integration links voice channels directly to game sessions. Party members connect peer-to-peer with zero dedicated server setup required.
+          </p>
+          <div class="card-metrics">
+            <span class="metric-tag">Embedded App SDK</span>
+            <span class="metric-tag">Zero Server Setup</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Engine Architecture Highlights -->
+  <section class="section" id="architecture">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Bare-Metal Systems</span>
+        <h2 class="section-title">Zero-Garbage-Collection Architecture</h2>
+        <p class="section-desc">WeCrafter is forged in modern C++20. No virtual machines, no runtime garbage collection pauses, and no JVM stutter—delivering silky-smooth 60+ FPS frame times across continental voxel terrains.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3 class="feature-title">Asynchronous Worker Thread Pool</h3>
+          <p class="feature-text">Background worker threads compute procedural terrain noise and compile chunk meshes without stalling the main render thread.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🧊</div>
+          <h3 class="feature-title">Greedy Voxel Mesh Optimization</h3>
+          <p class="feature-text">Culled internal faces combine adjacent coplanar voxels into unified quads, dramatically lowering vertex submission overhead on the GPU.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🌊</div>
+          <h3 class="feature-title">Cellular Fluid Thermodynamics</h3>
+          <p class="feature-text">Hydrostatic pressure and liquid leveling with real-time thermodynamic phase changes: Water meeting Molten Magma instantly solidifies into Obsidian.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3 class="feature-title">Modular Exosuit Rig Mechanics</h3>
+          <p class="feature-text">Fit Head, Chest, Legs, and Feet armor sockets to dynamically absorb up to 90% incoming kinetic trauma and expand EVA oxygen limits.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💾</div>
+          <h3 class="feature-title">10-Slot Binary Persistence Matrix</h3>
+          <p class="feature-text">Sector state serialization via sparse block-delta reconciliation (0x57435356 'WCSV') supporting local disk and cloud server sync.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📡</div>
+          <h3 class="feature-title">Omni-Directional Anomaly Scanner</h3>
+          <p class="feature-text">Sweep up to 350 meters with instant zero-latency cell math to catalog ancient precursor towers, geode caves, and expedition lore datapads.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔬</div>
+          <h3 class="feature-title">Multi-Scale 4×4 Sub-Block Grid</h3>
+          <p class="feature-text">Subdivide any standard 1m voxel into 64 micro-voxels (0.25m surgical resolution). 4 scale modes (1.0x, 0.75x, 0.5x, 0.25x) toggle on [B] with dynamic wireframe scaling.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">✅</div>
+          <h3 class="feature-title">42/42 Verified Unit Test Suite</h3>
+          <p class="feature-text">100% passing test coverage (<code>test_engine.exe</code>) verifying FastNoiseLite terrain, cellular liquids, 50 blocks, 36 items, 44 recipes, 21 mobs, and binary persistence.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: 50 Blocks Codex -->
+  <section class="section" id="codex" style="background: rgba(8, 12, 24, 0.5);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">The Material Periodic Table</span>
+        <h2 class="section-title">50 Registered Sci-Fi Block Types</h2>
+        <p class="section-desc">Every block in WeCrafter is defined with unique physical properties: hardness, light emission, transparency, sound profiles, and geological distribution.</p>
+      </div>
+
+      <!-- Codex Toolbar -->
+      <div class="codex-toolbar">
+        <div class="filter-tabs" id="codexTabs">
+          <button class="tab-btn active" data-filter="all">All (50)</button>
+          <button class="tab-btn" data-filter="industrial">Industrial Alloys (12)</button>
+          <button class="tab-btn" data-filter="geological">Geological Strata (15)</button>
+          <button class="tab-btn" data-filter="bioluminescent">Bioluminescent (10)</button>
+          <button class="tab-btn" data-filter="energy">Quantum & Energy (7)</button>
+          <button class="tab-btn" data-filter="fluids">Liquid & Gas (6)</button>
+        </div>
+
+        <div class="codex-search">
+          <span class="codex-search-icon">🔍</span>
+          <input type="text" id="codexSearch" placeholder="Search by name, ID, or property...">
+        </div>
+      </div>
+
+      <!-- 3D Voxel Stage Preview -->
+      <div class="voxel-stage-card">
+        <div class="voxel-stage-canvas-wrap">
+          <canvas id="voxelLabCanvas" width="280" height="280"></canvas>
+          <div class="voxel-stage-controls">
+            <button class="stage-btn active" id="stageOrbitBtn">Orbit: ON</button>
+            <button class="stage-btn" id="stageZoomReset">Reset Cam</button>
+          </div>
+        </div>
+
+        <div class="voxel-stage-details">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <div>
+              <span class="block-id-badge" id="stageBlockId">#1</span>
+              <h3 id="stageBlockName" style="display: inline-block; font-size: 1.4rem; color: #fff; margin: 0 0 0 10px;">Titanium Plating</h3>
+            </div>
+            <span id="stageBlockRarity" class="rarity-pill rarity-common">Common</span>
+          </div>
+
+          <p id="stageBlockDesc" style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px;">
+            Hardened aerospace alloy panel with reinforced structural rivets. The backbone of interstellar outpost construction.
+          </p>
+
+          <div class="spec-grid">
+            <div class="spec-item">
+              <span class="spec-label">Category</span>
+              <span class="spec-value" id="stageBlockCategory">Solid / Alloy</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Drill Hardness</span>
+              <span class="spec-value" id="stageBlockHardness">3.0 (Tough)</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Luminescence</span>
+              <span class="spec-value" id="stageBlockEmissive">Non-Emissive</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Atlas Tile Index</span>
+              <span class="spec-value text-cyan" id="stageBlockTile">Tile (1, 0)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Block Grid Container -->
+      <div class="block-grid" id="blockGrid"></div>
+    </div>
+  </section>
+
+  <!-- Section: Multi-Scale 4x4 Sub-Block Building ([B] Key) -->
+  <section class="section" id="subblocks" style="background: rgba(8, 14, 28, 0.7); border-top: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Precision Architectural Engineering</span>
+        <h2 class="section-title">Multi-Scale 4×4 Sub-Block Building System</h2>
+        <p class="section-desc">
+          WeCrafter features an internal 4×4 micro-voxel grid within standard 1-meter voxel coordinates (0.25m surgical resolution). Press <strong class="text-cyan">[B]</strong> to cycle through 4 distinct building scale modes in real time—enabling seamless transition from continental foundations down to delicate interior sculpting.
+        </p>
+      </div>
+
+      <!-- 4 Scale Modes Specification Cards -->
+      <div class="grid-4" style="margin-bottom: 30px;">
+        <div class="feature-card scale-card active" data-scale="0">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span class="badge badge-cyan font-mono">SCALE 0</span>
+            <span class="font-mono text-cyan" style="font-size: 0.8rem;">1.0m Cube</span>
+          </div>
+          <h3 class="card-title" style="font-size: 1.15rem; color: #fff;">1.0x Full Block</h3>
+          <p class="card-body" style="font-size: 0.85rem;">
+            Standard 1-meter cube comprising <strong>4×4×4 = 64 micro-voxels</strong>. Ideal for structural foundations, exterior walls, and bulk terrain modification.
+          </p>
+          <div class="card-metrics">
+            <span class="metric-tag">64 Micro-Voxels</span>
+            <span class="metric-tag">1.00m Resolution</span>
+          </div>
+        </div>
+
+        <div class="feature-card scale-card" data-scale="1">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span class="badge badge-cyan font-mono">SCALE 1</span>
+            <span class="font-mono text-cyan" style="font-size: 0.8rem;">0.75m Volume</span>
+          </div>
+          <h3 class="card-title" style="font-size: 1.15rem; color: #fff;">0.75x Medium Block</h3>
+          <p class="card-body" style="font-size: 0.85rem;">
+            Constructed with <strong>3×3×3 = 27 micro-voxels</strong>. Designed for heavy control consoles, modular machines, fortified battlements, and bulkheads.
+          </p>
+          <div class="card-metrics">
+            <span class="metric-tag">27 Micro-Voxels</span>
+            <span class="metric-tag">0.75m Resolution</span>
+          </div>
+        </div>
+
+        <div class="feature-card scale-card" data-scale="2">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span class="badge badge-cyan font-mono">SCALE 2</span>
+            <span class="font-mono text-cyan" style="font-size: 0.8rem;">0.5m Slab</span>
+          </div>
+          <h3 class="card-title" style="font-size: 1.15rem; color: #fff;">0.5x Half Block</h3>
+          <p class="card-body" style="font-size: 0.85rem;">
+            Composed of <strong>2×2×2 = 8 micro-voxels</strong>. Perfect for stairs, smooth ramps, slabs, dining counters, window sills, and parapets.
+          </p>
+          <div class="card-metrics">
+            <span class="metric-tag">8 Micro-Voxels</span>
+            <span class="metric-tag">0.50m Resolution</span>
+          </div>
+        </div>
+
+        <div class="feature-card scale-card" data-scale="3">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span class="badge badge-cyan font-mono">SCALE 3</span>
+            <span class="font-mono text-cyan" style="font-size: 0.8rem;">0.25m Micro</span>
+          </div>
+          <h3 class="card-title" style="font-size: 1.15rem; color: #fff;">0.25x Micro Block</h3>
+          <p class="card-body" style="font-size: 0.85rem;">
+            Precision <strong>1×1×1 = 1 micro-voxel</strong> surgical unit. Used for intricate architectural sculpting, electronic switches, decorative trim, and fine mosaics.
+          </p>
+          <div class="card-metrics">
+            <span class="metric-tag">1 Micro-Voxel</span>
+            <span class="metric-tag">0.25m Resolution</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Sub-Block Scale Workbench -->
+      <div class="subblock-workbench-grid">
+        <div class="subblock-canvas-card">
+          <div class="subblock-stage-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="text-cyan">◆</span>
+              <strong style="font-family: var(--font-mono); font-size: 0.88rem; color: #fff;">INTERACTIVE 4×4 SUB-BLOCK VIEWER</strong>
+            </div>
+            <div class="subblock-scale-badge" id="subblockHudBadge">
+              [ BUILD: 1.0x Full Block (64 voxels) ] [B]
+            </div>
+          </div>
+
+          <div class="subblock-canvas-wrap">
+            <canvas id="subblockCanvas" width="460" height="320"></canvas>
+            <div class="subblock-toast" id="subblockToast">SCALE SWITCH: 1.0x FULL BLOCK</div>
+          </div>
+
+          <div class="subblock-controls-bar">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; width: 100%;">
+              <button class="stage-btn active subblock-btn" data-scale="0">1.0x Full (64)</button>
+              <button class="stage-btn subblock-btn" data-scale="1">0.75x Medium (27)</button>
+              <button class="stage-btn subblock-btn" data-scale="2">0.5x Half (8)</button>
+              <button class="stage-btn subblock-btn" data-scale="3">0.25x Micro (1)</button>
+              <button class="btn btn-primary" id="cycleScaleBtn" style="padding: 6px 14px; font-size: 0.78rem; margin-left: auto;">
+                Press [B] Key
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="subblock-mechanics-panel">
+          <h4 style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--cyan-core); text-transform: uppercase; margin-bottom: 14px;">
+            Engine Sub-Voxel Mechanics
+          </h4>
+
+          <div class="subblock-feature-box">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span class="text-cyan">🔍</span>
+              <strong style="color: #fff; font-size: 0.88rem;">Sub-Voxel Selection & Raycast</strong>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; margin: 0;">
+              The selection wireframe bounding box automatically adapts dynamically from <strong>1.0m</strong> down to <strong>0.25m</strong> when hovering the crosshair over sub-block coordinates, highlighting the exact micro-voxel targeted.
+            </p>
+          </div>
+
+          <div class="subblock-feature-box" style="margin-top: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span class="text-emerald">⛏️</span>
+              <strong style="color: #fff; font-size: 0.88rem;">Sub-Voxel Mining & Retrieval</strong>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; margin: 0;">
+              Left-clicking a sub-block removes the targeted micro-voxel with surgical precision and returns the original block material into the player's inventory. Empty micro-grids automatically garbage-collect with zero memory leaks.
+            </p>
+          </div>
+
+          <div class="subblock-feature-box" style="margin-top: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span class="text-amber">📐</span>
+              <strong style="color: #fff; font-size: 0.88rem;">Persistent HUD Hotbar Integration</strong>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; margin: 0;">
+              Pressing <code>[B]</code> sequences scale modes instantly, broadcasting an on-screen toast and anchoring a persistent tactical HUD badge directly above the 9-slot quick hotbar.
+            </p>
+          </div>
+
+          <!-- Hotbar Simulated Preview -->
+          <div class="sim-hotbar-preview" style="margin-top: 16px;">
+            <div class="sim-hotbar-hud-tag" id="simHotbarHudTag">[ BUILD: 1.0x ] [B]</div>
+            <div class="sim-hotbar-slots">
+              <div class="sim-slot active"><span>1</span><div class="sim-slot-icon" style="background-position: -52px 0;"></div></div>
+              <div class="sim-slot"><span>2</span><div class="sim-slot-icon" style="background-position: -104px 0;"></div></div>
+              <div class="sim-slot"><span>3</span><div class="sim-slot-icon" style="background-position: -156px 0;"></div></div>
+              <div class="sim-slot"><span>4</span><div class="sim-slot-icon" style="background-position: -208px 0;"></div></div>
+              <div class="sim-slot"><span>5</span><div class="sim-slot-icon" style="background-position: -260px 0;"></div></div>
+              <div class="sim-slot"><span>6</span></div>
+              <div class="sim-slot"><span>7</span></div>
+              <div class="sim-slot"><span>8</span></div>
+              <div class="sim-slot"><span>9</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Sci-Fi Equipment & Consumables Armory -->
+  <section class="section" id="armory" style="background: rgba(6, 10, 22, 0.6); border-top: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Player Loadout & Bio-Tech</span>
+        <h2 class="section-title">Cybernetic Armory, Exosuits & Fauna Materials</h2>
+        <p class="section-desc">
+          36 specialized non-block inventory entities. Fit modular exosuit armor across 4 equipment sockets (Head, Chest, Legs, Feet) for up to 90% kinetic damage absorption, harvest alien steaks, aquatic filets, and armored pelts from 21 living fauna, equip high-speed laser drills, and inject bio-chemical stims granting timed adrenaline surges, hazard radiation immunity, and linked RPG masteries.
+        </p>
+      </div>
+
+      <!-- Armory Toolbar -->
+      <div class="codex-toolbar">
+        <div class="filter-tabs" id="armoryTabs">
+          <button class="tab-btn active" data-filter="all">All Items (36)</button>
+          <button class="tab-btn" data-filter="material">Fauna Materials (11)</button>
+          <button class="tab-btn" data-filter="food">Survival Food (7)</button>
+          <button class="tab-btn" data-filter="tool">Tools & Drills (5)</button>
+          <button class="tab-btn" data-filter="armor">Exosuit Armor (5)</button>
+          <button class="tab-btn" data-filter="drink">Hydration Drinks (3)</button>
+          <button class="tab-btn" data-filter="stim">Medical Stims (5)</button>
+        </div>
+
+        <div class="codex-search">
+          <span class="codex-search-icon">🔍</span>
+          <input type="text" id="armorySearch" placeholder="Search armor, tools, rations, stims, buffs...">
+        </div>
+      </div>
+
+      <!-- Exosuit Rig Fitting Bay & Kinetic Defense Simulator -->
+      <div class="exosuit-rig-container" id="exosuitRigBay">
+        <div class="exosuit-rig-paperdoll">
+          <div class="rig-panel-header">
+            <span class="font-mono text-cyan" style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+              🛡️ Exosuit Rig Fitting Bay
+            </span>
+            <span class="rig-status-pill" id="rigStatusPill">Unarmored (0% Absorption)</span>
+          </div>
+
+          <!-- 4 Equipment Sockets -->
+          <div class="armor-sockets-grid">
+            <!-- HEAD SOCKET -->
+            <div class="armor-socket-card" id="socketHead" data-slot="head">
+              <div class="socket-slot-label">HEAD</div>
+              <div class="socket-frame" id="socketHeadFrame">
+                <span class="socket-placeholder-icon">⛑️</span>
+              </div>
+              <div class="socket-info">
+                <div class="socket-item-name" id="socketHeadName">Empty Head Slot</div>
+                <div class="socket-item-bonus text-cyan" id="socketHeadBonus">No Defense</div>
+              </div>
+              <button class="socket-unequip-btn" id="socketHeadUnequip" title="Unequip Head Piece" style="display: none;">✕</button>
+            </div>
+
+            <!-- CHEST SOCKET -->
+            <div class="armor-socket-card" id="socketChest" data-slot="chest">
+              <div class="socket-slot-label">CHEST</div>
+              <div class="socket-frame" id="socketChestFrame">
+                <span class="socket-placeholder-icon">🦺</span>
+              </div>
+              <div class="socket-info">
+                <div class="socket-item-name" id="socketChestName">Empty Chest Slot</div>
+                <div class="socket-item-bonus text-cyan" id="socketChestBonus">No Defense</div>
+              </div>
+              <button class="socket-unequip-btn" id="socketChestUnequip" title="Unequip Chest Piece" style="display: none;">✕</button>
+            </div>
+
+            <!-- LEGS SOCKET -->
+            <div class="armor-socket-card" id="socketLegs" data-slot="legs">
+              <div class="socket-slot-label">LEGS</div>
+              <div class="socket-frame" id="socketLegsFrame">
+                <span class="socket-placeholder-icon">👖</span>
+              </div>
+              <div class="socket-info">
+                <div class="socket-item-name" id="socketLegsName">Empty Legs Slot</div>
+                <div class="socket-item-bonus text-cyan" id="socketLegsBonus">No Defense</div>
+              </div>
+              <button class="socket-unequip-btn" id="socketLegsUnequip" title="Unequip Legs Piece" style="display: none;">✕</button>
+            </div>
+
+            <!-- FEET SOCKET -->
+            <div class="armor-socket-card" id="socketFeet" data-slot="feet">
+              <div class="socket-slot-label">FEET</div>
+              <div class="socket-frame" id="socketFeetFrame">
+                <span class="socket-placeholder-icon">👢</span>
+              </div>
+              <div class="socket-info">
+                <div class="socket-item-name" id="socketFeetName">Empty Feet Slot</div>
+                <div class="socket-item-bonus text-cyan" id="socketFeetBonus">No Defense</div>
+              </div>
+              <button class="socket-unequip-btn" id="socketFeetUnequip" title="Unequip Feet Piece" style="display: none;">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rig Telemetry & Hazard Simulator -->
+        <div class="exosuit-telemetry-panel">
+          <div class="rig-telemetry-header">
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">
+              KINETIC FORCE DEFENSE TELEMETRY
+            </span>
+            <span class="font-mono text-cyan" style="font-size: 0.72rem;">C++ Engine: Section 13.5</span>
+          </div>
+
+          <div class="defense-rating-row">
+            <div>
+              <div class="defense-val-large" id="totalDefenseVal">0%</div>
+              <div class="defense-lbl">TOTAL DAMAGE MITIGATION</div>
+            </div>
+            <div class="rig-stats-summary">
+              <div class="rig-stat-item">
+                <span class="stat-lbl">MAX O₂ CAPACITY:</span>
+                <span class="stat-val font-mono text-cyan" id="rigOxygenVal">25.0s (Base)</span>
+              </div>
+              <div class="rig-stat-item">
+                <span class="stat-lbl">SPRINT VELOCITY:</span>
+                <span class="stat-val font-mono text-emerald" id="rigSpeedVal">1.00x (Normal)</span>
+              </div>
+              <div class="rig-stat-item">
+                <span class="stat-lbl">DAMAGE SOLVER:</span>
+                <span class="stat-val font-mono" style="color: var(--amber-gold);">damageTaken = raw * (1 - def)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Animated Defense Progress Meter -->
+          <div class="defense-meter-box">
+            <div class="defense-track-outer">
+              <div class="defense-track-fill" id="defenseTrackFill" style="width: 0%;"></div>
+              <div class="defense-marker marker-75" title="Titanium Rig Max (75%)">75%</div>
+              <div class="defense-marker marker-90" title="Quantum Aegis Max (90%)">90%</div>
+            </div>
+          </div>
+
+          <!-- Hazard Blast Interactive Simulator -->
+          <div class="hazard-sim-box">
+            <div class="hazard-sim-header">
+              <span style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--crimson-hazard); font-weight: 700;">
+                HAZARD BLAST TEST (-40 HP RAW DAMAGE):
+              </span>
+              <span id="blastOutcomeReadout" class="font-mono" style="font-size: 0.75rem; color: var(--text-dim);">
+                Unshielded: -40.0 HP damage taken
+              </span>
+            </div>
+
+            <div class="hazard-sim-actions">
+              <button class="btn-hazard-blast" id="simulateHazardBlastBtn">
+                💥 Fire Hazard Blast (-40 HP)
+              </button>
+              <div class="quick-set-btns">
+                <button class="stage-btn" id="equipTitaniumSetBtn">Equip Full Titanium Set (75%)</button>
+                <button class="stage-btn" id="equipQuantumSetBtn">Equip Quantum Aegis Rig (90%)</button>
+                <button class="stage-btn" id="unequipAllArmorBtn">Unequip All</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Armory Grid Container -->
+      <div class="armory-grid" id="armoryGrid"></div>
+    </div>
+  </section>
+
+  <!-- Section: Procedural World Gen & Climate Matrix -->
+  <section class="section" id="worldgen" style="background: rgba(8, 12, 24, 0.5);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Macro-Geological Matrix</span>
+        <h2 class="section-title">Massive Continental Scaling & Biomes</h2>
+        <p class="section-desc">
+          World generation is driven by ultra-low frequency macro Simplex noise (<em>f = 0.0006</em>, wavelength ≈ 1,666 blocks). Individual biomes span over <strong>1,400 to 2,000+ blocks across</strong>—a <strong>&gt;16× surface area expansion</strong> creating grand continental plates, expansive dunes, and multi-kilometer expeditions with zero chunk seam snapping.
+        </p>
+      </div>
+
+      <div class="climate-explorer-container">
+        <!-- Interactive 2D Graph -->
+        <div class="climate-graph-wrapper">
+          <canvas id="climateCanvas" width="440" height="360"></canvas>
+          <div class="climate-sliders">
+            <div class="slider-group">
+              <span>TEMPERATURE (T):</span>
+              <input type="range" id="tempSlider" min="-1" max="1" step="0.01" value="0.4">
+              <span id="tempValDisplay" class="text-cyan font-mono">+0.40</span>
+            </div>
+            <div class="slider-group">
+              <span>MOISTURE (M):</span>
+              <input type="range" id="moistSlider" min="-1" max="1" step="0.01" value="0.5">
+              <span id="moistValDisplay" class="text-cyan font-mono">+0.50</span>
+            </div>
+          </div>
+          <p style="margin-top: 10px; font-size: 0.78rem; color: var(--text-dim); font-family: var(--font-mono);">
+            [Click or Drag] anywhere on the climate matrix to re-target planetary coordinates
+          </p>
+        </div>
+
+        <!-- Biome Telemetry Panel -->
+        <div class="biome-report-panel">
+          <div>
+            <div class="biome-title-area">
+              <span id="biomeReportBadge" class="biome-badge">Warm & Moist Rainforest</span>
+              <h3 id="biomeReportName" class="biome-name">Xenoflora Basin</h3>
+            </div>
+
+            <ul class="biome-stats-list">
+              <li>
+                <span>Continental Scale:</span>
+                <strong class="text-cyan">1,400 – 2,000+ Blocks (&gt;16× Area)</strong>
+              </li>
+              <li>
+                <span>Surface Turf Layer:</span>
+                <strong id="biomeReportSurface" class="text-emerald">Bioluminescent Flora (ID #07)</strong>
+              </li>
+              <li>
+                <span>Subsurface Strata:</span>
+                <strong id="biomeReportSubsurface">Alien Regolith (ID #06)</strong>
+              </li>
+              <li>
+                <span>Atmospheric Fog:</span>
+                <div class="fog-swatch-box">
+                  <div id="biomeFogSwatch" class="fog-swatch" style="background-color: #1ae6bf;"></div>
+                  <strong id="biomeReportFog" class="font-mono">rgb(26, 230, 191)</strong>
+                </div>
+              </li>
+              <li>
+                <span>Procedural Structures:</span>
+                <strong id="biomeReportStructures">Mega-Trees with Quantum Core sap nodes, Lumen pods</strong>
+              </li>
+            </ul>
+
+            <p id="biomeReportDesc" style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.6;">
+              Fertile extraterrestrial rainforest with massive canopy trees, hanging bio-photonic lumen pods, and zero-seam continuous turf edge bleeding.
+            </p>
+          </div>
+
+          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-subtle); display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-dim);">
+            <span>• Continental Relief Noise (f=0.0028)</span>
+            <span>• 3D Spaghetti Caves (NA² + NB² &lt; 0.0075)</span>
+            <span>• Watertight Seabed Rule</span>
+            <span>• Basalt Bedrock Floor</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Continental Ocean Biomes & Marine Depth Stratification -->
+      <div class="marine-depth-card" style="margin-top: 32px; background: rgba(5, 12, 28, 0.85); border: 1px solid var(--border-bright); border-radius: var(--radius-md); padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span class="text-cyan" style="font-size: 1.1rem;">🌊</span>
+              <h3 style="font-family: var(--font-mono); font-size: 1.1rem; color: #fff; text-transform: uppercase; margin: 0;">
+                Macro Continental Oceans & Marine Depth Stratification
+              </h3>
+            </div>
+            <p style="font-size: 0.86rem; color: var(--text-dim); line-height: 1.5; margin: 0; max-width: 780px;">
+              Planetary water generation incorporates massive macro-continental ocean basins: <strong>DEEP_OCEAN</strong> (<em>C &lt; -0.08</em>) stretching across thousands of blocks with abyssal trenches at Y &isin; [18, 30], and <strong>OCEAN_SHALLOWS</strong> (<em>-0.08 &le; C &lt; 0.04</em>) forming coastal shelves that slope smoothly from Y = 32m to sandy beaches.
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="badge badge-cyan font-mono">SEA_LEVEL = 48m</span>
+            <span class="badge badge-emerald font-mono">Trench Headroom: 18-30m</span>
+          </div>
+        </div>
+
+        <!-- Interactive Depth Stratification Cross-Section -->
+        <div class="marine-depth-diagram">
+          <div class="depth-layer-strip active" data-depth="surface">
+            <div class="depth-layer-indicator">
+              <span class="depth-y-coord">Y = 48m</span>
+              <span class="depth-name">Atmospheric Ocean Surface</span>
+            </div>
+            <div class="depth-layer-desc">
+              Global baseline SEA_LEVEL. Wind-rippled specular surface and solar light attenuation.
+            </div>
+            <span class="depth-badge">Surface</span>
+          </div>
+
+          <div class="depth-layer-strip" data-depth="shallows">
+            <div class="depth-layer-indicator">
+              <span class="depth-y-coord">Y = 46…48m</span>
+              <span class="depth-name">Coastal Shallows & Beaches</span>
+            </div>
+            <div class="depth-layer-desc">
+              Gentle slopes of Nanite Sand (#09) and Alien Regolith (#06). Strict water depth &lt; 3m rejects fish spawning to prevent beached strandings.
+            </div>
+            <span class="depth-badge">OCEAN_SHALLOWS</span>
+          </div>
+
+          <div class="depth-layer-strip" data-depth="shelf">
+            <div class="depth-layer-indicator">
+              <span class="depth-y-coord">Y = 32…45m</span>
+              <span class="depth-name">Continental Shelf & Reefs</span>
+            </div>
+            <div class="depth-layer-desc">
+              13–16m vertical water column. Social schooling grounds for Neon Tetra Rays (#13), Auric Koi (#20), Prismatic Gliders (#16), and Spiny Puffers.
+            </div>
+            <span class="depth-badge">Reef Habitat</span>
+          </div>
+
+          <div class="depth-layer-strip" data-depth="trench">
+            <div class="depth-layer-indicator">
+              <span class="depth-y-coord">Y = 18…30m</span>
+              <span class="depth-name">Deep Oceanic Trenches</span>
+            </div>
+            <div class="depth-layer-desc">
+              18–30m below SEA_LEVEL. High-pressure pelagic abyss harboring Abyssal Anglers (#15), Void Eels (#14), Glowing Jellyfish (#19), and predatory Cyber Pikes (#18).
+            </div>
+            <span class="depth-badge">DEEP_OCEAN</span>
+          </div>
+
+          <div class="depth-layer-strip" data-depth="seabed">
+            <div class="depth-layer-indicator">
+              <span class="depth-y-coord">Y &le; 18m</span>
+              <span class="depth-name">Hydrothermal Seabed Stratum</span>
+            </div>
+            <div class="depth-layer-desc">
+              Volcanic Obsidian Slag (#19), micro-crystalline Silica Shale (#20), and hydrothermal vents crusted with precious Auric Nanite Ore (#30).
+            </div>
+            <span class="depth-badge">Volcanic Floor</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Dynamic Celestial Skybox & Weather Visuals -->
+  <section class="section" id="atmosphere" style="background: rgba(6, 10, 22, 0.6); border-top: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Atmospheric Simulation</span>
+        <h2 class="section-title">Dynamic Celestial Skybox & Weather Engine</h2>
+        <p class="section-desc">
+          Engineered with an inverted sky cube pipeline (<code>pos.xyww</code>, \(z/w = 1.0\)), continuous zenith-to-horizon celestial gradients, procedural solar and lunar discs with horizon extinction, twinkling celestial starfields, and multi-octave FBM procedural volumetric clouds reacting dynamically to real-time weather states.
+        </p>
+      </div>
+
+      <div class="atmosphere-workbench-grid">
+        <!-- Skybox Canvas Viewport -->
+        <div class="skybox-viewport-card">
+          <div class="skybox-header-bar">
+            <span class="font-mono text-cyan" id="skyboxTimeDisplay" style="font-size: 0.8rem; font-weight: 700;">12:00 SOLAR NOON</span>
+            <span class="font-mono text-emerald" id="skyboxSunElevDisplay" style="font-size: 0.75rem;">SOLAR ELEV: +65.0°</span>
+          </div>
+
+          <div class="skybox-canvas-wrapper" id="skyboxCanvasWrapper">
+            <canvas id="skyboxCanvas" width="540" height="340"></canvas>
+            <div class="skybox-lightning-flash" id="skyboxLightningFlash"></div>
+          </div>
+
+          <div class="skybox-time-bar">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);">PLANETARY TIME OF DAY:</span>
+              <span id="skyboxTimeVal" class="font-mono text-cyan" style="font-size: 0.78rem;">12:00</span>
+            </div>
+            <input type="range" id="skyboxTimeSlider" min="0" max="24" step="0.1" value="12" style="width: 100%;">
+
+            <div class="time-presets-row">
+              <button class="stage-btn time-preset-btn" data-time="6.0">🌅 Dawn (06:00)</button>
+              <button class="stage-btn time-preset-btn active" data-time="12.0">☀️ Noon (12:00)</button>
+              <button class="stage-btn time-preset-btn" data-time="18.5">🌇 Dusk (18:30)</button>
+              <button class="stage-btn time-preset-btn" data-time="0.0">🌌 Night (00:00)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weather & Volumetric Cloud Telemetry -->
+        <div class="atmosphere-controls-card">
+          <div>
+            <h4 style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-bright); text-transform: uppercase; margin-bottom: 12px;">
+              WEATHER STATE REACTIVITY
+            </h4>
+
+            <div class="weather-selector-row">
+              <button class="weather-btn active" data-weather="clear">
+                <span style="font-size: 1.1rem;">☀️</span>
+                <div>
+                  <div style="font-weight: 700;">Clear Sky (0)</div>
+                  <div style="font-size: 0.68rem; color: var(--text-dim);">Vibrant Azure & Soft FBM Clouds</div>
+                </div>
+              </button>
+
+              <button class="weather-btn" data-weather="ion_storm">
+                <span style="font-size: 1.1rem;">⚡</span>
+                <div>
+                  <div style="font-weight: 700;">Ion Storm (1)</div>
+                  <div style="font-size: 0.68rem; color: var(--text-dim);">Violet Tempest & Electric Arcs</div>
+                </div>
+              </button>
+
+              <button class="weather-btn" data-weather="nanite_fog">
+                <span style="font-size: 1.1rem;">🌫️</span>
+                <div>
+                  <div style="font-weight: 700;">Nanite Fog (2)</div>
+                  <div style="font-size: 0.68rem; color: var(--text-dim);">Amber Particulate Atmospheric Smog</div>
+                </div>
+              </button>
+            </div>
+
+            <!-- Lightning Trigger Action -->
+            <div style="margin-top: 14px;">
+              <button class="btn btn-primary" id="triggerLightningBtn" style="width: 100%; justify-content: center; font-size: 0.82rem; padding: 10px;">
+                ⚡ Trigger Lightning Arc & Thunder Strike
+              </button>
+            </div>
+
+            <!-- Cloud & Wind Sliders -->
+            <div class="atmosphere-sliders-box">
+              <div class="slider-group">
+                <span>VOLUMETRIC CLOUD DENSITY:</span>
+                <input type="range" id="cloudDensitySlider" min="0.1" max="1.0" step="0.05" value="0.55">
+                <span id="cloudDensityVal" class="text-cyan font-mono">55%</span>
+              </div>
+              <div class="slider-group">
+                <span>WIND DRIFT VELOCITY:</span>
+                <input type="range" id="windSpeedSlider" min="0.2" max="3.0" step="0.1" value="1.0">
+                <span id="windSpeedVal" class="text-cyan font-mono">1.0x</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shader Spec Telemetry -->
+          <div class="atmosphere-specs-footer">
+            <div class="spec-row">
+              <span style="color: var(--text-dim);">Shader Cube Pipeline:</span>
+              <span class="text-cyan font-mono">Inverted Box (pos.xyww, z/w=1.0)</span>
+            </div>
+            <div class="spec-row">
+              <span style="color: var(--text-dim);">Noise Algorithm:</span>
+              <span class="text-emerald font-mono">Dual-Octave Fractional Brownian (FBM)</span>
+            </div>
+            <div class="spec-row">
+              <span style="color: var(--text-dim);">Horizon Fog Blend:</span>
+              <span class="font-mono" style="color: var(--amber-gold);">Zero-Seam uFogColor Bleed</span>
+            </div>
+            <div class="spec-row">
+              <span style="color: var(--text-dim);">High-DPI Typography:</span>
+              <span class="text-purple font-mono">Integer-Snapped + 1px Black Shadows</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Planetary Exploration & Anomaly Scanner -->
+  <section class="section" id="exploration">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Planetary Discovery</span>
+        <h2 class="section-title">Visor 360° Compass & Anomaly Radar</h2>
+        <p class="section-desc">
+          Navigate massive continental scales with real-time navigational telemetry. Track azimuth headings on the Visor Compass Tape, sweep the horizon with the 350m Anomaly Scanner [X], and catalog ancient landmarks for progression XP.
+        </p>
+      </div>
+
+      <div class="exploration-hud-card">
+        <!-- Visor 360 Compass Tape -->
+        <div class="compass-tape-wrapper" id="compassTapeWrapper">
+          <div class="compass-reticle-triangle"></div>
+          <div class="compass-reticle-line"></div>
+          <div class="compass-tape-viewport">
+            <div class="compass-tape-track" id="compassTrack">
+              <span class="compass-cardinal">N</span><span>015°</span><span>030°</span>
+              <span class="compass-cardinal">NE</span><span>060°</span><span>075°</span><span class="compass-waypoint-diamond"></span>
+              <span class="compass-cardinal">E</span><span>105°</span><span>120°</span>
+              <span class="compass-cardinal">SE</span><span>150°</span><span>165°</span>
+              <span class="compass-cardinal">S</span><span>195°</span><span>210°</span>
+              <span class="compass-cardinal">SW</span><span>240°</span><span>255°</span>
+              <span class="compass-cardinal">W</span><span>285°</span><span>300°</span>
+              <span class="compass-cardinal">NW</span><span>330°</span><span>345°</span>
+              <span class="compass-cardinal">N</span><span>015°</span><span>030°</span>
+              <span class="compass-cardinal">NE</span><span>060°</span><span>075°</span>
+              <span class="compass-cardinal">E</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-family: var(--font-mono); font-size: 0.78rem;">
+            <span>BEARING AZIMUTH: <strong class="text-cyan" id="compassBearingReadout">045° NE</strong></span>
+            <span style="color: var(--amber-gold);">◆ PULSING WAYPOINT: LOCKED TARGET</span>
+            <span style="color: var(--text-dim);">[MOVE MOUSE OVER TAPE TO PAN]</span>
+          </div>
+        </div>
+
+        <!-- Anomaly Scanner Radar & Telemetry -->
+        <div class="scanner-grid">
+          <div>
+            <div class="scanner-radar-display">
+              <div class="scanner-radar-ring ring-1"></div>
+              <div class="scanner-radar-ring ring-2"></div>
+              <div class="scanner-radar-ring ring-3"></div>
+              <div class="scanner-sweep-beam" id="radarSweepBeam"></div>
+              <div class="scanner-blip" id="radarBlip" style="left: 65%; top: 38%;"></div>
+              <div style="position: absolute; bottom: 10px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--cyan-core);">
+                RANGE: 350 METERS
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 16px;">
+              <button class="btn btn-primary" id="triggerScanBtn" style="width: 100%; max-width: 320px;">
+                📡 Ping Radar [Press X]
+              </button>
+            </div>
+          </div>
+
+          <!-- Radar Telemetry Readout & Toast Preview -->
+          <div>
+            <div style="background: rgba(5, 8, 17, 0.7); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.8;">
+              <div style="color: var(--cyan-core); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; margin-bottom: 10px;">
+                OMNI-DIRECTIONAL RADAR TELEMETRY
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-dim);">TARGET ANOMALY:</span>
+                <strong id="scannerTargetName" style="color: #fff;">Precursor Relay Tower</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-dim);">RADIAL DISTANCE:</span>
+                <strong id="scannerDistance" class="text-cyan">184m</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-dim);">COMPASS BEARING:</span>
+                <strong id="scannerBearingVal" class="text-amber">072° (ENE)</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-dim);">ELEVATION DELTA:</span>
+                <strong id="scannerElevation" class="text-emerald">+18m (Ridge)</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-dim);">RADAR SOLVER:</span>
+                <span>Zero-Latency Cell Math (&lt;1μs)</span>
+              </div>
+            </div>
+
+            <!-- Dynamic Discovery Toast Container -->
+            <div class="toast-preview-container" id="toastContainer">
+              <div class="discovery-toast-banner toast-landmark">
+                <span style="font-size: 1.2rem;">🏛</span>
+                <div>
+                  <div style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim);">
+                    LANDMARK PROXIMITY CATALOGED
+                  </div>
+                  <div style="font-size: 0.88rem; font-weight: 700;">Precursor Relay Tower Located (184m)</div>
+                </div>
+                <span class="toast-xp-pill text-emerald">+250 XP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: 14 Procedural Structures & Ancient Ruins -->
+  <section class="section" id="structures" style="background: rgba(8, 12, 24, 0.5);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Planetary POIs & Artifacts</span>
+        <h2 class="section-title">14 Procedural Mega-Structures & Ruins</h2>
+        <p class="section-desc">
+          From cosmic impact craters and 16-block precursor communication towers to subterranean crystal geode caverns and volcanic hydrothermal vents.
+        </p>
+      </div>
+
+      <!-- Structures Grid dynamically loaded from JS -->
+      <div class="structures-showcase-grid" id="structuresGrid"></div>
+
+      <!-- Astraea-IV Lore Terminal -->
+      <div style="margin-top: 48px;">
+        <div class="lore-terminal-box">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="color: var(--emerald-turf);">📜</span>
+              <h3 style="font-size: 1.1rem; font-weight: 700; color: #fff; text-transform: uppercase;">
+                Astraea-IV Expedition Lore Logs (8 Decrypted Logs)
+              </h3>
+            </div>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--emerald-turf);">
+              CYBER CRATE DECRYPTION REWARD: +150 XP EACH
+            </span>
+          </div>
+
+          <div class="lore-terminal-grid">
+            <div class="lore-log-btn-list" id="loreLogList"></div>
+            <div class="lore-screen" id="loreLogScreen"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Fluid Dynamics & Thermodynamics -->
+  <section class="section" id="fluids">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Thermodynamic Physics</span>
+        <h2 class="section-title">Cellular Liquids & Alchemical Reactions</h2>
+        <p class="section-desc">Experience hydrostatic pressure dynamics, corner-averaged liquid sloped surfaces, and real-time magma reactions. Water meeting Molten Magma instantly solidifies into Obsidian Slag.</p>
+      </div>
+
+      <div class="fluid-sandbox">
+        <div class="fluid-sandbox-header">
+          <div class="fluid-type-selector">
+            <button class="fluid-btn active" data-type="water">💧 Planetary Water</button>
+            <button class="fluid-btn" data-type="magma">🔥 Molten Magma</button>
+            <button class="fluid-btn" data-type="solid">🧱 Solid Barrier</button>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-primary" id="triggerBreachBtn" style="padding: 6px 14px; font-size: 0.78rem;">💥 Breach Wall (High-Pressure Jet)</button>
+            <button class="stage-btn" id="resetFluidBtn">Reset Simulation</button>
+          </div>
+        </div>
+
+        <canvas id="fluidCanvas" width="640" height="360"></canvas>
+
+        <div class="fluid-hints">
+          <span>[Click + Drag] on canvas to dispense fluids or draw obstacles</span>
+          <span class="text-cyan">Thermodynamic Alchemy: Water + Magma = Solid Obsidian Slag + Steam Plumes</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Progressive Mining Simulator -->
+  <section class="section" id="mining" style="background: rgba(8, 12, 24, 0.5);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Excavation Physics</span>
+        <h2 class="section-title">10-Stage Chromatic Mining Decals</h2>
+        <p class="section-desc">Drilling is governed by block hardness: <code>t_break = max(0.12s, hardness × 0.70s)</code>. Watch 3D fracture decals shift from Cyan to Amber and critical Red-Orange stress before bursting into ballistic debris.</p>
+      </div>
+
+      <div class="mining-lab-grid">
+        <!-- Interactive Excavation Block -->
+        <div class="mining-interactive-zone" id="miningZone">
+          <div class="mining-target-block">
+            <div class="mining-target-face" id="miningFace">
+              <canvas id="miningDecalCanvas" width="130" height="130" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none;"></canvas>
+            </div>
+          </div>
+
+          <!-- Futuristic HUD Reticle Meter -->
+          <div class="reticle-hud-wrap">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 0.75rem; color: var(--cyan-core);">DRILL PROGRESS:</span>
+              <span id="miningPctDisplay" class="font-mono text-cyan" style="font-weight: 700;">0%</span>
+            </div>
+            <div class="reticle-gauge-outer">
+              <div class="reticle-gauge-fill" id="reticleFill"></div>
+            </div>
+            <span style="font-size: 0.72rem; color: var(--text-dim); margin-top: 4px;">[HOLD LEFT CLICK TO MINE]</span>
+          </div>
+        </div>
+
+        <!-- Mining Mechanics Spec -->
+        <div style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+              <div>
+                <label style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-dim); display: block; margin-bottom: 6px;">EXCAVATION TARGET:</label>
+                <select id="miningBlockSelector" style="width: 100%; background: #070b16; border: 1px solid var(--border-bright); color: var(--cyan-core); font-family: var(--font-mono); font-size: 0.82rem; padding: 8px 10px; border-radius: 4px;">
+                  <option value="13">Alien Foliage (Hardness: 0.5)</option>
+                  <option value="20">Silica Shale (Hardness: 1.8)</option>
+                  <option value="1" selected>Titanium Plating (Hardness: 3.0)</option>
+                  <option value="40">Void Obsidian (Hardness: 8.0)</option>
+                  <option value="45">Singularity Core (Hardness: 50.0)</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-dim); display: block; margin-bottom: 6px;">EQUIPPED TOOL:</label>
+                <select id="miningToolSelector" style="width: 100%; background: #070b16; border: 1px solid var(--border-bright); color: var(--amber-gold); font-family: var(--font-mono); font-size: 0.82rem; padding: 8px 10px; border-radius: 4px;">
+                  <option value="none" selected>Default Bare Hands (1.0x)</option>
+                  <option value="laser">Mining Laser (2.5x Drill)</option>
+                  <option value="drill">Thermal Plasma Drill (4.5x Heavy Bore)</option>
+                  <option value="cutter">Vibro-Cutter (4.0x Foliage)</option>
+                  <option value="excavator">Sonic Excavator (4.0x Soils)</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="miningDurationInfo" style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--emerald-turf); margin-bottom: 20px; background: rgba(0, 255, 157, 0.08); padding: 10px 14px; border-radius: 4px; border: 1px solid rgba(0, 255, 157, 0.25); line-height: 1.5;">
+              Hardness: 3.0 | Tool Multiplier: 1.0x | Excavation Time: 2.10s
+            </div>
+
+            <h4 style="color: var(--text-bright); font-size: 1rem; margin-bottom: 12px; text-transform: uppercase;">Decal Stress Evolution</h4>
+            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem; font-family: var(--font-mono);">
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span style="display: inline-block; width: 14px; height: 14px; border-radius: 2px; background: #00f0ff;"></span>
+                <span><strong>0% - 35%:</strong> High-frequency Cyan surface fractures</span>
+              </div>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span style="display: inline-block; width: 14px; height: 14px; border-radius: 2px; background: #ffb700;"></span>
+                <span><strong>35% - 70%:</strong> Deep Amber structural shear stress</span>
+              </div>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span style="display: inline-block; width: 14px; height: 14px; border-radius: 2px; background: #ff3358;"></span>
+                <span><strong>70% - 100%:</strong> Critical Red-Orange thermal rupture</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 16px; font-size: 0.78rem; color: var(--text-dim); line-height: 1.6;">
+            <strong>Calmed Mined Physics:</strong> Breaking any block spawns an explosion of 18 colored ballistic physics debris particles and a floating 3D miniature item entity with smooth magnetic pickup.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: 4x4 Micro-Voxel Engine & Autonomous Fauna Ecosystem (21 Species) -->
+  <section class="section" id="fauna" style="background: rgba(8, 12, 24, 0.6); border-top: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Planetary Fauna Matrix &amp; Aquatic Ecosystem</span>
+        <h2 class="section-title">21 Micro-Voxel Species, Social Schooling &amp; Fluid Physics</h2>
+        <p class="section-desc">
+          WeCrafter simulates 21 autonomous living species across 6 planetary biomes. Governed by the Strict Geological Water Depth Law (\(\text{waterDepth} = \text{SEA\_LEVEL} - \text{surface} \ge 3\)), aquatic fish spawn strictly in deep water columns in social schooling pods of 2–4 with cohesion and collision separation. Features true 3D fluid swimming vectors (pitch/yaw banking) and realistic beached flopping physics when stranded on land.
+        </p>
+      </div>
+
+      <!-- Micro-Voxel & Fauna Architecture Highlight Banner -->
+      <div class="microvoxel-spec-banner">
+        <div class="micro-spec-item">
+          <span class="micro-spec-val">21 Species</span>
+          <span class="micro-spec-lbl">Fauna Population Matrix</span>
+        </div>
+        <div class="micro-spec-item">
+          <span class="micro-spec-val">8 Aquatic</span>
+          <span class="micro-spec-lbl">Depth &ge; 3m Schooling</span>
+        </div>
+        <div class="micro-spec-item">
+          <span class="micro-spec-val">2–4 Pods</span>
+          <span class="micro-spec-lbl">Social Swarm Cohesion</span>
+        </div>
+        <div class="micro-spec-item">
+          <span class="micro-spec-val">12 Walkers</span>
+          <span class="micro-spec-lbl">Biome Terrestrial AI</span>
+        </div>
+        <div class="micro-spec-item">
+          <span class="micro-spec-val">Beached AI</span>
+          <span class="micro-spec-lbl">Stranded Flopping Decay</span>
+        </div>
+      </div>
+
+      <!-- Strict Water Depth Law Interactive Simulator -->
+      <div class="water-depth-sim-card" style="background: rgba(5, 12, 28, 0.8); border: 1px solid var(--border-bright); border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+          <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--cyan-core); text-transform: uppercase;">
+            🌊 Strict Geological Water Depth Law Simulator:
+          </span>
+          <span class="rig-status-pill armored" id="waterDepthStatus" style="font-size: 0.72rem;">
+            ✅ PERMITTED (Depth: 4m &ge; 3m)
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); min-width: 140px;">
+            WATER DEPTH: <strong class="text-cyan font-mono" id="waterDepthVal">4.0m</strong>
+          </span>
+          <input type="range" id="waterDepthSlider" min="1" max="8" step="0.5" value="4" style="flex: 1; min-width: 180px;">
+          <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim);">
+            RULE: [Depth &lt; 3m = Rejection] | [Depth &ge; 3m = Submerged Placement]
+          </span>
+        </div>
+      </div>
+
+      <!-- Fauna Main Interactive Stage -->
+      <div class="fauna-workbench-grid">
+        <!-- 3D Articulated Fauna Viewer -->
+        <div class="fauna-stage-card">
+          <div class="fauna-stage-header">
+            <!-- Habitat Filter Tabs -->
+            <div class="fauna-tabs" id="faunaHabitatTabs">
+              <button class="stage-btn active" data-habitat="all">All (21)</button>
+              <button class="stage-btn" data-habitat="aquatic">🌊 Aquatic (8)</button>
+              <button class="stage-btn" data-habitat="terrestrial">🐾 Land (12)</button>
+              <button class="stage-btn" data-habitat="avian">🦅 Avian (1)</button>
+            </div>
+            <span class="rig-status-pill armored" id="faunaAiBadge">AI: WANDER (1.8 m/s)</span>
+          </div>
+
+          <!-- Species Selector Dropdown -->
+          <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+            <label style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-dim); white-space: nowrap;">SELECT SPECIES (21 TOTAL):</label>
+            <select id="faunaSpeciesSelect" style="flex: 1; background: #070e1c; border: 1px solid var(--border-bright); color: var(--cyan-core); font-family: var(--font-mono); font-size: 0.8rem; padding: 7px 10px; border-radius: 4px;">
+              <optgroup label="Aquatic Fish Species (Depth &ge; 3m &amp; Schooling Swarms)">
+                <option value="13">Neon Tetra Ray (Continental Shelf Ray - 12 HP, Y=32…45m)</option>
+                <option value="14">Void Eel (Deep Abyssal Trench - 26 HP, Y=18…30m)</option>
+                <option value="15">Abyssal Angler (Deep Pelagic Trench - 34 HP, Y=18…30m)</option>
+                <option value="16">Prismatic Glider (Continental Shelf Hydrofoil - 22 HP, Y=32…45m)</option>
+                <option value="17">Magma Vent Guppy (Hydrothermal Vent - 18 HP, Y=18…24m)</option>
+                <option value="18">Cyber Pike (Deep Trench Apex Torpedo - 30 HP, Y=18…30m)</option>
+                <option value="19">Glowing Jellyfish (Deep Trench Medusa - 16 HP, Y=18…30m)</option>
+                <option value="20">Auric Koi (Continental Shelf Gilded - 24 HP, Y=32…45m)</option>
+              </optgroup>
+              <optgroup label="Terrestrial Biome Wildlife">
+                <option value="0" selected>Cyber-Hog (Plains &amp; Xenoflora Grazer - 20 HP)</option>
+                <option value="1">Nanite Hound (Badlands Apex Cyber-Predator - 32 HP)</option>
+                <option value="3">Dune Strider (Arid Sand Dunes Biped Runner - 24 HP)</option>
+                <option value="4">Scrap Scavenger (Industrial Scrap Rodent - 28 HP)</option>
+                <option value="5">Sand Viper (Dune Sidewinder Serpent - 22 HP)</option>
+                <option value="6">Spore Grazer (Xenoflora Giant Fungus Grazer - 42 HP)</option>
+                <option value="7">Chameleon Stalker (Camouflaged Ambush Predator - 30 HP)</option>
+                <option value="8">Lumen Beetle (Bioluminescent Chitin Scarab - 32 HP)</option>
+                <option value="9">Magma Tortoise (Caldera Armored Volcanic Shell - 55 HP)</option>
+                <option value="10">Cinder Stalker (Basalt Canyons Flame Biped - 38 HP)</option>
+                <option value="11">Frost Yeti (Alpine Blizzard Apex Biped - 65 HP)</option>
+                <option value="12">Crystal Scorpion (Crystalline Spires Stinger - 36 HP)</option>
+              </optgroup>
+              <optgroup label="Avian Aerial Wildlife">
+                <option value="2">Xeno-Bird (Atmospheric Flier &amp; Glider - 14 HP)</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="fauna-canvas-wrap">
+            <canvas id="faunaCanvas" width="520" height="340"></canvas>
+            <div id="faunaHurtOverlay" class="fauna-hurt-overlay"></div>
+          </div>
+
+          <!-- AI Behavior State Machine Controls -->
+          <div class="fauna-ai-controls">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">
+                AI STATE MACHINE DISPATCH:
+              </span>
+              <span id="faunaStateDesc" class="font-mono text-cyan" style="font-size: 0.72rem;">Wandering waypoint path</span>
+            </div>
+
+            <div class="fauna-state-btns" id="faunaStateBtns">
+              <button class="stage-btn active" data-state="wander">WANDER</button>
+              <button class="stage-btn" data-state="idle">IDLE</button>
+              <button class="stage-btn" data-state="graze">GRAZE / SWIM</button>
+              <button class="stage-btn" data-state="flee">FLEE</button>
+              <button class="stage-btn" data-state="soar" id="soarStateBtn" style="display: none;">SOAR / GLIDE</button>
+            </div>
+
+            <!-- Hunting / Raycast Strike Combat Simulator -->
+            <div style="margin-top: 12px; display: flex; gap: 8px;">
+              <button class="btn btn-primary" id="faunaHuntBtn" style="flex: 1; font-size: 0.78rem; padding: 8px 12px; justify-content: center;">
+                ⚔️ Strike Target (Hunt Raycast)
+              </button>
+              <button class="stage-btn" id="faunaResetBtn" style="font-size: 0.75rem; padding: 8px 12px;">
+                Reset Mob
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4x4 Micro-Voxel Real-Time Carving Pad -->
+        <div class="micro-carver-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle);">
+            <h4 style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--cyan-core); text-transform: uppercase; margin: 0;">
+              REAL-TIME 4×4 MICRO-BLOCK CARVER
+            </h4>
+            <span class="font-mono text-emerald" id="carverVoxelCount" style="font-size: 0.75rem;">64 / 64 Voxels</span>
+          </div>
+
+          <p style="font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 12px;">
+            Click or drag on any individual 0.25m micro-voxel in the 4×4 block below to carve geometry with dynamic vertex updates.
+          </p>
+
+          <div class="carver-canvas-wrap">
+            <canvas id="carverCanvas" width="340" height="240"></canvas>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <button class="stage-btn" id="carverSphereBtn" style="flex: 1; font-size: 0.75rem; padding: 6px 10px;">
+              Carve Sphere (r=0.75m)
+            </button>
+            <button class="stage-btn" id="carverResetBtn" style="flex: 1; font-size: 0.75rem; padding: 6px 10px;">
+              Reset 4×4 Block
+            </button>
+          </div>
+
+          <div class="fauna-loot-preview-box" style="margin-top: 14px;">
+            <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--amber-gold); font-weight: 700; margin-bottom: 6px;">
+              ACTIVE FAUNA LOOT TABLE:
+            </div>
+            <div id="faunaLootDetails" style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-dim); line-height: 1.6;">
+              • Raw Alien Meat (#83, +20 Food)<br>
+              • Bio-Synthetic Sinew (#125, +20 Astrobiology XP)<br>
+              • 1-Block Auto-Jump Kinematics (5.2 m/s)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Targeted Mob Combat, Health Bars & Death Loot Drops -->
+  <section class="section" id="combat" style="background: rgba(8, 12, 24, 0.6); border-top: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Tactical Engagement &amp; Vital Telemetry</span>
+        <h2 class="section-title">Targeted Mob Combat &amp; Tactical HUD</h2>
+        <p class="section-desc">
+          Engage hostile and passive fauna with surgical 10m raycasting, continuous attack cadence (0.32s), and tool damage scaling. Pointing at any entity displays a real-time Tactical Target HUD with dynamic tri-color health gradient, impact damage flashes, directional knockback, and physical loot drops on lethal strikes.
+        </p>
+      </div>
+
+      <!-- Tactical Combat Simulator Grid -->
+      <div class="combat-sim-container">
+        <!-- Target HUD Preview & Combat Stage -->
+        <div class="combat-stage-card">
+          <!-- Tactical Target Health HUD Bar (Simulated Viewport Top) -->
+          <div class="target-hud-display" id="targetHudDisplay">
+            <div class="target-hud-header">
+              <div class="target-name-wrap">
+                <span class="target-taxonomy-badge" id="targetTaxonomyBadge">[AQUATIC]</span>
+                <span class="target-name" id="targetMobName">Abyssal Angler</span>
+              </div>
+              <span class="target-hp-text" id="targetHpText">34 / 34 HP</span>
+            </div>
+            <div class="target-bar-track">
+              <div class="target-bar-fill" id="targetBarFill" style="width: 100%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
+              <div class="target-bar-flash" id="targetBarFlash"></div>
+            </div>
+          </div>
+
+          <!-- Combat Canvas Viewport -->
+          <div class="combat-canvas-wrap">
+            <canvas id="combatCanvas" width="520" height="300"></canvas>
+            <div class="combat-toast" id="combatToast">TARGET ELIMINATED: +35 XP</div>
+            <div class="damage-number-overlay" id="damageOverlay"></div>
+          </div>
+
+          <!-- Weapon & Action Bar -->
+          <div class="combat-actions-bar">
+            <div class="weapon-selector-group">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">SELECT WEAPON:</span>
+              <div class="weapon-btns" id="weaponBtns">
+                <button class="stage-btn active weapon-btn" data-dmg="8" data-name="Unarmed">Unarmed (8 Dmg)</button>
+                <button class="stage-btn weapon-btn" data-dmg="28" data-name="Diamond Drill">Drill (28 Dmg)</button>
+                <button class="stage-btn weapon-btn" data-dmg="35" data-name="Laser Sword">Laser (35 Dmg)</button>
+                <button class="stage-btn weapon-btn" data-dmg="42" data-name="Heavy Sledge">Sledge (42 Dmg)</button>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center; margin-top: 14px;">
+              <button class="btn btn-primary" id="combatStrikeBtn" style="flex: 1; padding: 10px 16px; font-size: 0.84rem; justify-content: center;">
+                ⚔️ Strike Mob [0.32s Cadence]
+              </button>
+              <button class="stage-btn" id="combatRespawnBtn" style="padding: 10px 16px; font-size: 0.8rem;">
+                Respawn Mob
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Combat Telemetry & Loot Drops Panel -->
+        <div class="combat-telemetry-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle);">
+            <h4 style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--cyan-core); text-transform: uppercase; margin: 0;">
+              TARGET TELEMETRY &amp; LOOT
+            </h4>
+            <select id="combatMobSelect" style="background: #070e1c; border: 1px solid var(--border-bright); color: var(--cyan-core); font-family: var(--font-mono); font-size: 0.75rem; padding: 4px 8px; border-radius: 4px;">
+              <option value="abyssal_angler">Abyssal Angler [AQUATIC - 34 HP]</option>
+              <option value="cyber_hog">Cyber-Hog [FAUNA - 20 HP]</option>
+              <option value="void_eel">Void Eel [AQUATIC - 26 HP]</option>
+              <option value="xeno_bird">Xeno-Bird [AVIAN - 14 HP]</option>
+              <option value="frost_yeti">Frost Yeti [FAUNA - 65 HP]</option>
+            </select>
+          </div>
+
+          <div class="combat-metric-cards">
+            <div class="combat-metric-card">
+              <span class="combat-metric-label">Raycast Range:</span>
+              <span class="combat-metric-value text-cyan">10.0m Precision Ray</span>
+            </div>
+            <div class="combat-metric-card">
+              <span class="combat-metric-label">Attack Cadence:</span>
+              <span class="combat-metric-value text-emerald">0.32s Continuous</span>
+            </div>
+            <div class="combat-metric-card">
+              <span class="combat-metric-label">Health Gradient:</span>
+              <span class="combat-metric-value" id="hudGradientStatus" style="color: #10b981;">Emerald Green (&gt;50%)</span>
+            </div>
+            <div class="combat-metric-card">
+              <span class="combat-metric-label">Impact Feedback:</span>
+              <span class="combat-metric-value text-amber">0.2s White Flash &amp; Knockback</span>
+            </div>
+          </div>
+
+          <!-- Physical Loot Drops Matrix -->
+          <div style="margin-top: 16px;">
+            <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--amber-gold); font-weight: 700; margin-bottom: 8px; text-transform: uppercase;">
+              COLLECTED LOOT TRAY (LETHAL DROPS):
+            </div>
+            <div class="combat-loot-tray" id="combatLootTray">
+              <div class="loot-item-pill">
+                <span class="loot-icon">🐟</span>
+                <span>Raw Fish Filet (#85)</span>
+              </div>
+              <div class="loot-item-pill">
+                <span class="loot-icon">✨</span>
+                <span>Bioluminescent Scale (#128)</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle); font-size: 0.78rem; color: var(--text-dim); line-height: 1.55; font-family: var(--font-mono);">
+            • Left-Click holding triggers uninterrupted 0.32s strikes.<br>
+            • Fatal blows trigger kinetic particle explosion &amp; XP grant.<br>
+            • Physical loot entities spawn with buoyant fluid physics.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Save & Load Matrix (Sector Memory Bank & Cloud Matrix) -->
+  <section class="section" id="saves" style="background: rgba(6, 10, 22, 0.7); border-top: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Sector Persistence &amp; Delta Architecture</span>
+        <h2 class="section-title">10-Slot Sector Memory Bank &amp; Cloud Matrix</h2>
+        <p class="section-desc">
+          Engineered with sparse coordinate block-delta reconciliation (<code>std::unordered_map&lt;Vec3i, BlockID&gt;</code>) and compact binary serialization (<code>0x57435356 'WCSV'</code>, Version 1). Seamlessly save, restore, and synchronize infinite worlds, player transforms, 45-slot inventories, and RPG masteries across local storage and dedicated cloud servers.
+        </p>
+      </div>
+
+      <!-- Sector Controls & Backend Selector Toolbar -->
+      <div class="save-matrix-toolbar" style="background: rgba(5, 8, 17, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div class="backend-toggle-group" style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">STORAGE BACKEND:</span>
+          <button class="stage-btn active" id="backendLocalBtn" data-backend="local">
+            💾 Local Disk (IndexedDB)
+          </button>
+          <button class="stage-btn" id="backendCloudBtn" data-backend="cloud">
+            ☁️ Central Cloud Server (Sync Token: WCSV-0x5352)
+          </button>
+        </div>
+
+        <div class="save-actions-quick-row" style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="stage-btn" id="quickSaveBtn" title="Quick-Save Sector State [F5]">⚡ Quick Save [F5]</button>
+          <button class="stage-btn" id="quickLoadBtn" title="Quick-Load Most Recent Sector [F9]">🔄 Quick Load [F9]</button>
+          <button class="stage-btn" id="exportBinaryBtn" title="Export Raw .WCSV Binary Payload">📤 Export .WCSV</button>
+          <button class="stage-btn" id="importBinaryBtn" title="Import Sector Payload">📥 Import Sector</button>
+        </div>
+      </div>
+
+      <!-- 10-Slot Interactive Matrix Grid -->
+      <div class="save-slots-grid" id="saveSlotsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+        <!-- Dynamically rendered 10 slots -->
+      </div>
+
+      <!-- Binary Layout Blueprint & Architecture Telemetry -->
+      <div class="save-binary-spec-box" style="margin-top: 28px; background: rgba(5, 8, 17, 0.6); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px;">
+        <div class="spec-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--cyan-core);">
+            BINARY REPLICATION &amp; DELTA TELEMETRY // WCSV ARCHITECTURE
+          </span>
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--emerald-turf);" id="saveActiveStatus">
+            BACKEND: LOCAL DISK // READY
+          </span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; font-family: var(--font-mono); font-size: 0.74rem;">
+          <div class="spec-cell">
+            <span style="color: var(--text-dim); display: block; margin-bottom: 2px;">MAGIC / VERSION:</span>
+            <strong class="text-cyan">0x57435356 ('WCSV') / v1.0</strong>
+          </div>
+          <div class="spec-cell">
+            <span style="color: var(--text-dim); display: block; margin-bottom: 2px;">DELTA RECONCILIATION:</span>
+            <strong class="text-emerald">Sparse Map Superimposition</strong>
+          </div>
+          <div class="spec-cell">
+            <span style="color: var(--text-dim); display: block; margin-bottom: 2px;">INVENTORY SERIALIZATION:</span>
+            <strong class="text-amber">45 Slots (9 Hotbar + 27 Pack + 4 Armor + 5 Craft)</strong>
+          </div>
+          <div class="spec-cell">
+            <span style="color: var(--text-dim); display: block; margin-bottom: 2px;">CLOUD REPLICATION:</span>
+            <strong class="text-purple">0x53525653 'SRVS' Network Packets</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Holographic 2x2 Crafting Matrix -->
+  <section class="section" id="crafting">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Molecular Assembly</span>
+        <h2 class="section-title">Holographic 2×2 Crafting Matrix (44 Recipes)</h2>
+        <p class="section-desc">The player carries an integrated 45-slot inventory and 2×2 holographic fabrication matrix supporting 44 registered recipes across structural blocks, excavation tools, survival rations, medical stims, wearable exosuit armor, and fauna materials.</p>
+      </div>
+
+      <div class="crafting-lab-container">
+        <!-- Interactive Crafting Bench -->
+        <div class="crafting-bench">
+          <div class="grid-2x2">
+            <div class="craft-slot" id="craftSlot0"></div>
+            <div class="craft-slot" id="craftSlot1"></div>
+            <div class="craft-slot" id="craftSlot2"></div>
+            <div class="craft-slot" id="craftSlot3"></div>
+          </div>
+
+          <div class="craft-arrow">➔</div>
+
+          <div class="craft-result-slot" id="craftResultSlot"></div>
+        </div>
+
+        <!-- Recipe Selector List -->
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <h4 style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--cyan-core); margin: 0; text-transform: uppercase;">
+              FABRICATION CATALOG (44 RECIPES):
+            </h4>
+            <div class="recipe-filter-tabs" id="recipeFilterTabs" style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button class="stage-btn active" data-filter="all">All (44)</button>
+              <button class="stage-btn" data-filter="block">Blocks (18)</button>
+              <button class="stage-btn" data-filter="armor">Exosuit Armor (8)</button>
+              <button class="stage-btn" data-filter="food_drink">Food &amp; Drink (8)</button>
+              <button class="stage-btn" data-filter="tool">Tools (5)</button>
+              <button class="stage-btn" data-filter="stim">Medical Stims (5)</button>
+            </div>
+          </div>
+          <div class="recipe-quick-list" id="recipeList" style="max-height: 290px; overflow-y: auto;"></div>
+          <p id="craftRecipeDesc" style="margin-top: 16px; font-size: 0.82rem; color: var(--text-dim); font-family: var(--font-mono);">
+            Select a recipe above to auto-populate the 2×2 holographic matrix.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: RPG Survival Subsystem & Masteries -->
+  <section class="section" id="rpg" style="background: rgba(8, 12, 24, 0.5);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Life Support & Telemetry</span>
+        <h2 class="section-title">RPG Survival & Tech Masteries</h2>
+        <p class="section-desc">Manage vital life support systems while conquering alien biomes. Double-tap Space to engage 2× Flight Mode with zero-gravity hover and EVA breathing.</p>
+      </div>
+
+      <div class="rpg-container">
+        <!-- Interactive Visor HUD -->
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h4 style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-bright); text-transform: uppercase;">
+              VISOR LIFE SUPPORT GAUGES
+            </h4>
+            <div style="display: flex; gap: 8px;">
+              <button class="stage-btn" id="toggleDiveBtn">Submerge (25s EVA)</button>
+              <button class="stage-btn" id="toggleFlightBtn">Flight: INACTIVE</button>
+            </div>
+          </div>
+
+          <!-- Active Buffs & Effects Ribbon -->
+          <div id="activeBuffsContainer" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; min-height: 28px;"></div>
+
+          <div class="hud-gauges">
+            <div class="gauge-item">
+              <div class="gauge-label-row">
+                <span>HEALTH / VITALITY</span>
+                <span class="text-crimson font-mono" id="healthVal">100 / 100</span>
+              </div>
+              <div class="gauge-bar-track">
+                <div class="gauge-bar-val gauge-health" id="gaugeHealth" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <div class="gauge-item">
+              <div class="gauge-label-row">
+                <span>HUNGER / METABOLISM</span>
+                <span class="text-amber font-mono" id="hungerVal">88 / 100</span>
+              </div>
+              <div class="gauge-bar-track">
+                <div class="gauge-bar-val gauge-hunger" id="gaugeHunger" style="width: 88%;"></div>
+              </div>
+            </div>
+
+            <div class="gauge-item">
+              <div class="gauge-label-row">
+                <span>HYDRATION / WATER</span>
+                <span class="text-cyan font-mono" id="waterVal">92 / 100</span>
+              </div>
+              <div class="gauge-bar-track">
+                <div class="gauge-bar-val gauge-water" id="gaugeWater" style="width: 92%;"></div>
+              </div>
+            </div>
+
+            <div class="gauge-item">
+              <div class="gauge-label-row">
+                <span>OXYGEN (25s SUBMERGED RULE)</span>
+                <span class="text-cyan font-mono" id="oxygenVal">25.0s</span>
+              </div>
+              <div class="gauge-bar-track">
+                <div class="gauge-bar-val gauge-oxygen" id="gaugeOxygen" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <div class="gauge-item">
+              <div class="gauge-label-row">
+                <span>STAMINA / SPRINT</span>
+                <span class="text-emerald font-mono" id="staminaVal">100%</span>
+              </div>
+              <div class="gauge-bar-track">
+                <div class="gauge-bar-val gauge-stamina" id="gaugeStamina" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick-Access Survival Belt -->
+          <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--cyan-core); text-transform: uppercase; font-weight: 700;">
+                QUICK-ACCESS TACTICAL BELT (CLICK TO CONSUME):
+              </span>
+              <button class="stage-btn" id="drainStatsBtn" style="font-size: 0.68rem; padding: 3px 8px;" title="Drain vitals to test medical stims">
+                Drain Vitals (-30%)
+              </button>
+            </div>
+            <div class="quick-belt-grid" id="quickBeltGrid"></div>
+          </div>
+
+          <!-- Difficulty Modes -->
+          <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); display: block; margin-bottom: 8px;">SESSION DIFFICULTY:</span>
+            <div style="display: flex; gap: 8px;">
+              <button class="stage-btn diff-btn" data-diff="creative">Creative</button>
+              <button class="stage-btn diff-btn" data-diff="peaceful">Peaceful</button>
+              <button class="stage-btn diff-btn active" data-diff="survival">Survival</button>
+              <button class="stage-btn diff-btn" data-diff="hardcore">Hardcore</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tech Masteries -->
+        <div>
+          <h4 style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-bright); margin-bottom: 16px; text-transform: uppercase;">
+            TECH MASTERIES (RPG PROGRESSION)
+          </h4>
+
+          <div class="mastery-grid">
+            <div class="mastery-card" id="masteryCardMining">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="mastery-name">⛏ Mining Efficiency</div>
+                <span class="mastery-lvl font-mono text-cyan" id="miningLvlDisplay">Lvl 1</span>
+              </div>
+              <p class="mastery-desc">Accelerates mining laser excavation velocity across high-hardness ores like Void Obsidian.</p>
+              <div class="mastery-xp-bar"><div class="mastery-xp-fill" id="miningXpFill" style="width: 25%;"></div></div>
+            </div>
+
+            <div class="mastery-card" id="masteryCardTerra">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="mastery-name">🌐 Terraforming Mastery</div>
+                <span class="mastery-lvl font-mono text-cyan" id="terraLvlDisplay">Lvl 1</span>
+              </div>
+              <p class="mastery-desc">Extends raycast block placement and excavation reach from 5.0m to 8.5m with Quantum Spanner.</p>
+              <div class="mastery-xp-bar"><div class="mastery-xp-fill" id="terraXpFill" style="width: 20%;"></div></div>
+            </div>
+
+            <div class="mastery-card" id="masteryCardAstro">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="mastery-name">🧬 Astrobiology</div>
+                <span class="mastery-lvl font-mono text-cyan" id="astroLvlDisplay">Lvl 1</span>
+              </div>
+              <p class="mastery-desc">Reduces metabolic hunger and dehydration rates in hostile volcanic and arid biomes.</p>
+              <div class="mastery-xp-bar"><div class="mastery-xp-fill" id="astroXpFill" style="width: 35%;"></div></div>
+            </div>
+
+            <div class="mastery-card" id="masteryCardCyber">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="mastery-name">⚙ Cybernetics</div>
+                <span class="mastery-lvl font-mono text-cyan" id="cyberLvlDisplay">Lvl 1</span>
+              </div>
+              <p class="mastery-desc">Augments sprint velocity up to 15.6 blocks/s and provides passive environmental hazard defense.</p>
+              <div class="mastery-xp-bar"><div class="mastery-xp-fill" id="cyberXpFill" style="width: 30%;"></div></div>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; background: rgba(0, 240, 255, 0.06); border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-md);">
+            <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--cyan-core); font-weight: 700; margin-bottom: 6px;">
+              🚀 2× ZERO-GRAVITY FLIGHT MODE
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-dim); line-height: 1.5;">
+              Double-tap <code>Space</code> within 0.3s to toggle flight. Enjoy instantaneous block drilling, zero-gravity hover (ascend with Space, descend with Shift), and automatic EVA life support.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Multiplayer & Discord Activity -->
+  <section class="section" id="multiplayer">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Social & Expedition</span>
+        <h2 class="section-title">Seamless Co-Op & Discord Voice Integration</h2>
+        <p class="section-desc">Conquer uncharted alien worlds together. Join friends in high-speed multiplayer or drop directly inside any Discord voice channel with zero installation.</p>
+      </div>
+
+      <div class="network-grid">
+        <div class="packet-card">
+          <h4 style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--cyan-core); text-transform: uppercase;">
+            Planetary Co-Op Odyssey
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 8px;">
+            Explore, build, and survive across the cosmos alongside your expedition crew:
+          </p>
+
+          <div class="packet-list">
+            <div class="packet-pill">
+              <span>🚀 Infinite Shared Worlds</span>
+              <span class="text-cyan">Explore & terraform planets together</span>
+            </div>
+            <div class="packet-pill">
+              <span>⚡ Synchronized Fluid Physics</span>
+              <span class="text-cyan">Real-time water breaches & magma alchemy</span>
+            </div>
+            <div class="packet-pill">
+              <span>🛡 Squad Hazard Survival</span>
+              <span class="text-cyan">Brave radiation chasms & ion storms</span>
+            </div>
+            <div class="packet-pill">
+              <span>🔬 Cooperative Crafting</span>
+              <span class="text-cyan">Combine rare salvage for Dyson Shards</span>
+            </div>
+            <div class="packet-pill">
+              <span>🏗 Deep Mantle Megabases</span>
+              <span class="text-cyan">Build underground bunker outposts</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="packet-card">
+          <h4 style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--emerald-turf); text-transform: uppercase;">
+            Discord Voice Channel Activity
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 8px;">
+            Instant zero-install multiplayer directly inside Discord desktop and mobile clients:
+          </p>
+
+          <div style="background: #060914; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 16px; margin-top: 16px; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6; color: #a0d8ef;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #00ffcc; box-shadow: 0 0 6px #00ffcc;"></span>
+              <strong style="color: #fff;">@discord/embedded-app-sdk</strong>
+            </div>
+            <div>• Auto OAuth2 authentication & voice channel sync</div>
+            <div>• Real-time participant join/leave events</div>
+            <div>• Rich Presence: State, Party Size, Active Biome</div>
+            <div>• Instant play in browser — zero downloads needed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Controls Cheat Sheet -->
+  <section class="section" id="controls" style="background: rgba(8, 12, 24, 0.5);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Command Interface</span>
+        <h2 class="section-title">Navigation & Interaction Controls</h2>
+      </div>
+
+      <div class="controls-grid">
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Movement</span>
+          <span class="keycap">W A S D</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Jump / Swim Up</span>
+          <span class="keycap">SPACE</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Toggle 2x Flight</span>
+          <span class="keycap">DOUBLE-TAP SPACE</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Sprint / Dive / Descend</span>
+          <span class="keycap">LEFT SHIFT</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Mine / Excavate</span>
+          <span class="keycap">HOLD LEFT CLICK</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Place Hotbar Block</span>
+          <span class="keycap">RIGHT CLICK</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">36-Slot Inventory & Crafting</span>
+          <span class="keycap">E</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Anomaly Radar Scanner (350m)</span>
+          <span class="keycap">X</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Drop Held Item</span>
+          <span class="keycap">Q</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Select Hotbar Slot</span>
+          <span class="keycap">KEYS 1 - 9 / SCROLL</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Toggle Visor Telemetry</span>
+          <span class="keycap">F3</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Cycle Building Scale (1.0x / 0.75x / 0.5x / 0.25x)</span>
+          <span class="keycap">B</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Targeted Mob Combat (0.32s Cadence)</span>
+          <span class="keycap">LEFT CLICK (MOB)</span>
+        </div>
+        <div class="control-item">
+          <span style="color: var(--text-dim);">Pause Menu / Mouse Cursor</span>
+          <span class="keycap">ESC</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Coming Soon / Mission Status -->
+  <section class="section" id="stay-tuned">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pretitle">Mission Status</span>
+        <h2 class="section-title">Coming Soon — The Odyssey Awaits</h2>
+        <p class="section-desc">WeCrafter is currently undergoing deep-space alpha development. When the signal broadcasts, embark on your expedition with zero hassle or complicated setups.</p>
+      </div>
+
+      <div class="terminal-card">
+        <div class="terminal-header">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="hero-badge-pulse" style="width: 10px; height: 10px;"></div>
+            <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--emerald-turf); font-weight: 700; text-transform: uppercase;">
+              BROADCAST FREQUENCY: IN ACTIVE DEVELOPMENT
+            </span>
+          </div>
+          <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);">STAGE: CLOSED ALPHA</span>
+        </div>
+
+        <div class="terminal-body" style="text-align: center; padding: 40px 24px;">
+          <h3 style="font-size: 1.8rem; font-weight: 800; color: var(--text-bright); text-transform: uppercase; margin-bottom: 14px;">
+            Prepare for Planetfall
+          </h3>
+          <p style="color: var(--text-dim); max-width: 620px; margin: 0 auto 28px; line-height: 1.65; font-size: 0.95rem;">
+            Whether you want to build sprawling planetary megabases on PC or jump into instant co-op with friends directly inside a Discord voice call, WeCrafter will be accessible seamlessly on day one.
+          </p>
+
+          <!-- Interactive Early Access Signal Transmitter -->
+          <div style="max-width: 520px; margin: 0 auto 32px; background: rgba(5, 8, 17, 0.8); border: 1px solid var(--border-bright); border-radius: var(--radius-md); padding: 8px 8px 8px 16px; display: flex; gap: 10px; align-items: center; box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);">
+            <input type="text" id="callsignInput" placeholder="Enter your Call-Sign or Comms ID..." style="flex: 1; background: transparent; border: none; color: var(--text-bright); font-family: var(--font-mono); font-size: 0.88rem; outline: none;">
+            <button class="btn btn-primary" id="transmitSignalBtn" style="padding: 10px 18px; white-space: nowrap;">Transmit Signal</button>
+          </div>
+          <div id="signalStatusMsg" style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--emerald-turf); min-height: 20px; margin-bottom: 24px;"></div>
+
+          <!-- Target Platform Badges -->
+          <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+            <span class="packet-pill" style="display: inline-flex; align-items: center; gap: 8px;">
+              <span class="text-cyan">◆</span> PC Desktop Experience
+            </span>
+            <span class="packet-pill" style="display: inline-flex; align-items: center; gap: 8px;">
+              <span class="text-emerald">◆</span> Discord Voice Activity (Zero Install)
+            </span>
+            <span class="packet-pill" style="display: inline-flex; align-items: center; gap: 8px;">
+              <span class="text-amber">◆</span> Instant WebAssembly Cloud
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>WeCrafter</h4>
+          <p>
+            Next-generation procedural voxel game built in ISO C++20 and modern OpenGL 3.3 Core. High-performance, zero-garbage-collection architecture with 50 registered sci-fi blocks, cellular fluid thermodynamics, and multiplayer readiness.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h5>Documentation</h5>
+          <ul class="footer-links">
+            <li><a href="../docs/FEATURES_AND_OPTIONS.md">Features & Architecture</a></li>
+            <li><a href="../docs/BLOCK_CREATION_GUIDE.md">Block Creation Guide</a></li>
+            <li><a href="../docs/WORLD_GEN_AND_BIOMES.md">World Gen & Biomes</a></li>
+            <li><a href="../docs/MULTIPLAYER_GUIDE.md">Multiplayer Guide</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Engine Specs</h5>
+          <ul class="footer-links">
+            <li><span>C++20 (MSVC 2022)</span></li>
+            <li><span>OpenGL 3.3 Core</span></li>
+            <li><span>GLFW 3.4 & GLAD</span></li>
+            <li><span>FastNoiseLite</span></li>
+            <li><span>Kenney CC0 Assets</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© WeCrafter Core Development Team. Free and Open Voxel Odyssey.</span>
+        <span>Built with Passion for High Frame Rates.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
