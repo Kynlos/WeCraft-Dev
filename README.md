@@ -9,7 +9,7 @@
 
 ## 🚀 Quick Start
 
-1. **Download** [`WeCrafter-v1.2-portable.zip`](../../releases/latest) from the [latest release](../../releases/latest)
+1. **Download** [`WeCrafter-v1.3-portable.zip`](../../releases/latest) from the [latest release](../../releases/latest)
 2. **Extract** the zip to any folder (keep the `assets/` folder next to `WeCrafter.exe`)
 3. **Double-click** `WeCrafter.exe` — no installation required!
 
@@ -76,6 +76,33 @@ Play with your friends anywhere across the internet — even behind strict CGNAT
 | `F3` | Toggle Debug overlay |
 | `Esc` | Pause menu / cancel / back |
 | `Tab` | Cycle camera modes (First-person / Third-person) |
+
+---
+
+## 🛠️ Crafting Book, Doors & Outpost Housing
+
+WeCrafter v1.3 introduces a complete blueprint fabrication catalog, working pneumatic airlocks, fire, lighting, and interactive housing furniture!
+
+### 📖 Fabrication Recipe Book (Keys: `E` or Right-Click Workbench)
+- **Interactive Recipe Catalog**: Switch effortlessly between the classic **[2x2 MATRIX]** and the **[RECIPE BOOK]** tab in your inventory console.
+- **Category Filtering**: Filter blueprints by `ALL`, `BUILD`, `TOOLS`, `FURNI`, `SURV`, and `TECH`.
+- **Material Inspection**: Click any recipe to view required ingredients color-coded in real time (bright green when available in inventory, soft red when missing).
+- **Quantity Controls**: Adjust crafting quantity with `[-]`, `[+]`, or `[MAX]`, and click **[FABRICATE]** to automatically deduct ingredients and craft items directly!
+- **[LOAD 2x2] Helper**: Instantly places the recipe's ingredients directly into the 2x2 crafting grid for manual tinkering.
+
+### 🚪 Working Pneumatic Airlocks & Doors
+- **2-Block Height Synchronization**: Placing a door automatically establishes both upper and lower halves. Breaking either half cleanly breaks the entire door and drops the door item.
+- **Dynamic Collision States**: Closed doors block players and hostile entities (`Solid`). Right-click either half to open: both halves swing open 90 degrees with pass-through collision (`Passable`), allowing seamless walking through outposts.
+
+### 🔥 Campfires, Cooking & Ambient Lighting
+- **Campfire Cooking**: Right-click a burning campfire with raw alien meat or raw fish filets to sizzle and cook hearty steaks and crispy filets (+Food and +Health).
+- **Plasma Torches & Lumen Lamps**: Emissive phosphor illumination blocks that shine brightly through the alien night and illuminate subterranean caverns.
+
+### 🪑 Outpost Furniture & Cryo-Pods
+- **Ergonomic Chairs**: Right-click to rest and recover stamina and health.
+- **Reinforced Tables**: Modular interior decoration surfaces for bases.
+- **Cryo-Bed Respawn Sync**: Right-click any Cryo-Bed station to calibrate your emergency locator. If you perish or fall into the void, life support automatically recovers you safely back to your Cryo-Bed!
+- **Engineering Workbench**: Right-click on a placed workbench in the world to open the full Crafting Recipe Book on demand.
 
 ---
 
