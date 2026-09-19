@@ -21,19 +21,22 @@
 
 Play with your friends anywhere across the internet — even behind strict CGNAT home connections — with zero port forwarding required!
 
-### 1-Click Server Hosting (with Cloudflare Quick Tunnel)
+### 1-Click Server Hosting (with Ngrok Static Domain)
 1. Double-click `start_server.cmd` in your game folder.
-2. The script launches the dedicated server on port 7777 and spins up an encrypted, account-free Cloudflare P2P tunnel.
-3. The script automatically copies the public tunnel URL (`https://...trycloudflare.com`) directly to your Windows clipboard and displays it on screen!
-4. Send the URL to your friends.
+2. The script launches the dedicated server on port 7777 and spins up an encrypted Ngrok tunnel bound to the official static domain (`https://causal-tranquil-tag.ngrok-free.dev`).
+3. The script automatically copies the public tunnel URL (`wss://causal-tranquil-tag.ngrok-free.dev`) directly to your Windows clipboard!
 
-### Joining a Multiplayer Sector
+### Joining a Multiplayer Sector (In-Game Server Browser)
 1. In the main menu, click **MULTIPLAYER**.
-2. Click the **Server Address** field and press **Ctrl+V** (or simply **Right-Click** the input box) to paste the URL.
-3. Enter your **Explorer Call-Sign**.
-4. Click **CONNECT TO SECTOR**!
+2. Browse the live sector list:
+   - **Development**: The official persistent sector hosted over Ngrok. Shows live `[ONLINE]`, online player count (e.g. `0/32 Players`), and real-time ping latency.
+   - **Local Sector**: Connects directly to `localhost:7777` for local LAN testing.
+   - **Custom Sector Gateway**: Enter or paste any custom IP / tunnel URL.
+3. Click the **[REFRESH PING]** button at any time to re-probe server statuses.
+4. Select your desired sector, enter your **Explorer Call-Sign**, and click **CONNECT TO SECTOR**!
 
 ### Multiplayer Features & Controls
+- **Live Server Browser**: Shows online/offline status, live connected player counts, and ping latency before connecting.
 - **F11 — Player List & Teleportation**: View all active explorers in your sector with ping and coordinates. Click **[TELEPORT]** to warp safely within 10 blocks facing that player!
 - **Enter — In-Game Chat**: Press `Enter` to open chat, type your transmission, and hit `Enter` to broadcast to the sector. Press `Esc` to cancel.
 - **Synchronized Player Models**: See other explorers in real-time with full 3D biped astronaut meshes, custom skin suits, head pitch, and movement animations.
